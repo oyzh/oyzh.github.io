@@ -1,2 +1,0 @@
-#+TITLE : Deep Learing
-* this is the article published in nature

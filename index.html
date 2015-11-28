@@ -6,7 +6,7 @@ title: Zhenhuan Ouyang's Homepage
 <p>Articles</p>
 <ul>
   {% for post in site.posts %}
-  <li><h3>{{ post.date | date_to_string }}&nbsp;&raquo;&nbsp;<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3></li>
+  <li><h2>{{ post.date | date_to_string }}&nbsp;&raquo;&nbsp;<a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2></li>
   {% endfor %}
 
 

@@ -6,8 +6,7 @@ title: Zhenhuan Ouyang's Homepage
 <p>Articles</p>
 <ul>
   {% for post in site.posts %}
-  <li><h1><img src="/image/jofa.gif"
- style="vertical-align:middle" border=0 alt="(&#x9ad8;&#x5fb7;&#x7eb3;)">{{ post.date | date_to_string }}<a href="{{ site.baseurl }}{{ post.url }}">
+  <li><h1>{{ post.date | date_to_string }}<a href="{{ site.baseurl }}{{ post.url }}">
 {{ post.title }}</a></h1></li>
   {% endfor %}
 

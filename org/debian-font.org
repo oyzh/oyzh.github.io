@@ -20,7 +20,8 @@ fcitx&
 #+end_src
 
 -----
-[[http://oyzh.github.io][Back to Homepage]]
-
-[[http://github.com/oyzh][Github]]
-
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

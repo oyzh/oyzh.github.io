@@ -3,7 +3,7 @@ body {
     font-family: Times,Helvetica,Arial;
     background-color: #77FFEE;
     color: black;
-    line-height: 20pt;
+    line-height: 50pt;
     padding-left:5pt;
     padding-top:5pt;
     text-indent:0;

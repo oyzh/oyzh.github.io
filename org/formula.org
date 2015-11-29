@@ -1,5 +1,4 @@
 #+TITLE: 在org-mode中用MathJax插入公式
-#+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
 #+OPTIONS: toc:nil
 #+OPTIONS: author:nil

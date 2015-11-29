@@ -1,0 +1,15 @@
+#+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+-----
+#+TITLE:设置博客的问题
+#+OPTIONS: toc:nil
+1.如何控制MathJax产生的公式，比如行内公式会使相邻两行间隔变大，还有公式如何居中。（已解决，原来是段与段之间间隔比较大。。。orz）
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

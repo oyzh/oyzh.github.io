@@ -1,8 +1,9 @@
-#+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil
 #+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
 -----
 #+TITLE:
 #+TOC: headlines 2

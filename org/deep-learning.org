@@ -1,4 +1,4 @@
-#+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil
@@ -6,6 +6,7 @@
 -----
 #+TITLE:Deep Learning
 #+OPTIONS: toc:nil
+#+OPTIONS: num:nil
 这是Ian Goodfellow,Aaron Courville和Youshua Bengio在2015出版的书。由于比较新，所以我准备利用这本书结合论文来学习。学习的同时做好笔记。
 * 应用数学与机器学习基础
 ** 线性代数

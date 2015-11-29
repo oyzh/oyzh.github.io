@@ -1,5 +1,6 @@
 #+TITLE: 在org-mode中用MathJax插入公式
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+HTML_MATHJAX: align: center mathml: t indent: 0em tagside: left font: Neo-Euler scale: 100
 #+OPTIONS: toc:nil
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil

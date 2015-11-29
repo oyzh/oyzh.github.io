@@ -1,15 +1,16 @@
-#+TITLE: 在org-mode中用MathJax插入公式
 #+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil
 #+OPTIONS: timestamp:nil
 -----
+#+TITLE:
 #+TOC: headlines 2
 #+OPTIONS: toc:nil
 
-
 -----
-[[http://oyzh.github.io][Back to Homepage]]
-
-[[http://github.com/oyzh][Github]]
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

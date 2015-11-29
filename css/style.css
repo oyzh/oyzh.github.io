@@ -1,4 +1,14 @@
-body {background-color: #F8F4E7; color: #552800;}
+body {
+    font-size: 10pt;
+    font-family: Helvetica,Arial;
+    color: black;
+    background-color: #F8F4E7;
+    color: #552800;
+    line-height: 14pt;
+    padding-left:5pt;
+    padding-top:5pt;
+    text-indent:0;
+}
 a.link {color:#0000A0;}
 a.visited {color: #A000A0;}
 a.active {color: #00A000;}

@@ -1,0 +1,22 @@
+#+HTML_MATHJAX: align:"left" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+-----
+#+TITLE:HTML与CSS入门
+#+OPTIONS: toc:nil
+* CSS
+概念：创建一个独立的样式单文档，以指定的字体、颜色、背景和其他确定网站外观的特征。然后链接需要使用该样式单的所有网页，而不是在每个文档中都重复指定这些样式。
+** 样式入门
++ 布局属性，由影响网页上元素位置的属性（如边距、填充、对其等）组成。
++ 格式属性，由影响网站中元素的视觉显示的属性（如字体类型、大小、颜色等）组成。
+*** 布局属性
+CSS布局属性用于决定内容在网页上如何排列。最重要的布局属性之一是display，它扫描元素相对其他元素如何显示。
+*** 格式化属性
+CSS格式化属性用于控制网页内容的外观，而不是物理位置。
+
+-----
+[[http://oyzh.github.io][Back to Homepage]]
+
+[[http://github.com/oyzh][Github]]

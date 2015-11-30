@@ -1,5 +1,10 @@
 #+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil
 #+OPTIONS: timestamp:nil

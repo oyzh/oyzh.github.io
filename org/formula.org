@@ -1,6 +1,6 @@
 #+TITLE: 在org-mode中用MathJax插入公式
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
-#+HTML_MATHJAX: align: center mathml: t indent: 0em tagside: left font: Neo-Euler scale: 100
+#+HTML_MATHJAX: align: center mathml: t indent: 0em tagside: left font: Neo-Euler path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 #+OPTIONS: toc:nil
 #+OPTIONS: author:nil
 #+OPTIONS: creator:nil
@@ -8,9 +8,12 @@
 -----
 #+TOC: headlines 2
 $F=ma$
-
+\[s=\sqrt{3}\]
 $\frac{a}{b}$
-
+\begin{array}{cc}
+a&b\\
+c&c
+\end{array}
 $a_b$
 
 $\vec{n}$
@@ -27,11 +30,15 @@ x=\sqrt{\sqrt{b}}
 x=\sqrt{b}
 \end{equation}
 \begin{equation}
-F=\frac{a}{b}
+F=\frac{a}{b} 
 \end{equation}
 $$\frac{\partial y}{\partial t}$$
 When $a \ne 0$. there are two solutions to \(ax^2 + bx +c = 0\) and they are
 $$x = {-b \pm \sqrt{b^2-4\lambda} \over 2a}.$$
+\begin{eqnarray}
+a+b=1\\
+c+d=2
+\end{eqnarray}
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

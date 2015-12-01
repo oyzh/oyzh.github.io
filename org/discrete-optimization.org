@@ -31,15 +31,24 @@ f(e) & \ge &0    & \forall{e}\in{E}\\
 
 这个问题有多项式时间解法，并且有多种算法。其中一个是类似最大流问题，通过剩余图找增广环来实现的 *环消除算法* (/Cycle Canceling Algorithm/ )。算法步骤如下：
 
-*输入*:有向图 $G=(V,E)$ ，容量函数 $w:E\to{R^+}$ ，花费函数 $c:E\to{R^+}$ 和平衡函数  $b:V\to{R}$ 。\\
-*输出*:最小花费流 $f:E\to{R^+}$ 。\\
-初始化：计算一个可行的流 $f$ 。\\
-while  $G_f$ 包含一个负的花费环 do\\
-从 $G_f$ 中找到一个简单负环 $C$ 。\\
-从 $C$ 中减去 $r_f(C)$ 个单位的流量并加入到 $f$  来构成新的 $f$ 。\\
-end\\
-return $f$ \\
-其中 $r_f(C)=min_{e\in C}{r_f(e)}$ 。\\还有其他算法比如:Successive Shortest Path Algorithm和Primal-Dual Agorithm。
+*输入*:有向图 $G=(V,E)$ ，容量函数 $w:E\to{R^+}$ ，花费函数 $c:E\to{R^+}$ 和平衡函数  $b:V\to{R}$ 。
+
+*输出*:最小花费流 $f:E\to{R^+}$ 。
+
+初始化：计算一个可行的流 $f$ 。
+
+while  $G_f$ 包含一个负的花费环 do
+
+从 $G_f$ 中找到一个简单负环 $C$ 。
+
+从 $C$ 中减去 $r_f(C)$ 个单位的流量并加入到 $f$  来构成新的 $f$ 。
+end
+
+return $f$ 
+
+其中 $r_f(C)=min_{e\in C}{r_f(e)}$ 。
+
+还有其他算法比如:Successive Shortest Path Algorithm和Primal-Dual Agorithm。
 
 
 

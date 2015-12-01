@@ -210,15 +210,40 @@ f(e) & \ge &0    & \forall{e}\in{E}\\
 </p>
 
 <p>
-<b>输入</b>:有向图 \(G=(V,E)\) ，容量函数 \(w:E\to{R^+}\) ，花费函数 \(c:E\to{R^+}\) 和平衡函数  \(b:V\to{R}\) 。<br  />
-<b>输出</b>:最小花费流 \(f:E\to{R^+}\) 。<br  />
-初始化：计算一个可行的流 \(f\) 。<br  />
-while  \(G_f\) 包含一个负的花费环 do<br  />
-从 \(G_f\) 中找到一个简单负环 \(C\) 。<br  />
-从 \(C\) 中减去 \(r_f(C)\) 个单位的流量并加入到 \(f\)  来构成新的 \(f\) 。<br  />
-end<br  />
-return \(f\) <br  />
-其中 \(r_f(C)=min_{e\in C}{r_f(e)}\) 。\\还有其他算法比如:Successive Shortest Path Algorithm和Primal-Dual Agorithm。
+<b>输入</b>:有向图 \(G=(V,E)\) ，容量函数 \(w:E\to{R^+}\) ，花费函数 \(c:E\to{R^+}\) 和平衡函数  \(b:V\to{R}\) 。
+</p>
+
+<p>
+<b>输出</b>:最小花费流 \(f:E\to{R^+}\) 。
+</p>
+
+<p>
+初始化：计算一个可行的流 \(f\) 。
+</p>
+
+<p>
+while  \(G_f\) 包含一个负的花费环 do
+</p>
+
+<p>
+从 \(G_f\) 中找到一个简单负环 \(C\) 。
+</p>
+
+<p>
+从 \(C\) 中减去 \(r_f(C)\) 个单位的流量并加入到 \(f\)  来构成新的 \(f\) 。
+end
+</p>
+
+<p>
+return \(f\) 
+</p>
+
+<p>
+其中 \(r_f(C)=min_{e\in C}{r_f(e)}\) 。
+</p>
+
+<p>
+还有其他算法比如:Successive Shortest Path Algorithm和Primal-Dual Agorithm。
 </p>
 
 

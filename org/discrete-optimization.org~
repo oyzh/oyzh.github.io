@@ -1,0 +1,34 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:t
+#+STARTUP: content
+-----
+#+TITLE:Discrete Optimization
+#+OPTIONS: toc:nil
+* 最小花费流
+** 问题介绍
+输入：给出一个有向图 $G=(V,E)$ ，有边的容量函数： $w:E\to{\Re^+}$ ，有边的花费函数 $c:E\to{\Re^+}$ 和一个平衡函数 $b:V\to{\Re}$ 。\\
+目标：计算一个可行解 $f$ ，以使总花费 $\sum_{e\in{E}}c(e)f(e)$ 最小。\\
+这个问题可以表示为一个线性优化方程：
+\begin{equation}
+\begin{split}
+minimize \space \sum_{e\in{E}}c(e)f(e)\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\space\\
+subject \space{to}  \sum_{(u,v)\in{E}}f(u,v)-\sum_{(v,u)\in{E}}f(v,u) &= &b(u)\space & \forall{u}\in{V}\\
+f(e) & \le &w(e) & \forall{e}\in{E}\\
+f(e) & \ge &0    & \forall{e}\in{E}\\
+\end{split}
+\end{equation}
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

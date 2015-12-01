@@ -1,0 +1,30 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:This Week
+#+OPTIONS: toc:nil
+* TODO 论文两篇
+1. deep learning
+2. 另一篇在CVPR2015上选或一篇经典论文。
+* TODO 离散优化作业
+两周未做的作业。
+* TODO ppt
+做要讲的ppt，包括SIFT论文和SVM。
+* TODO 代码
+JABBA，Matlab，Opencv。
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML
+* TODO 计算机视觉作业

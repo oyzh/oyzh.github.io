@@ -37,7 +37,7 @@ f(e) & \ge &0    & \forall{e}\in{E}\\
 
 初始化：计算一个可行的流 $f$ 。
 
-while  $G_f$ 包含一个负的花费环 do
+while $\space G_f\space$ 包含一个负的花费环 do
 
 从 $G_f$ 中找到一个简单负环 $C$ 。
 

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>计算机视觉</title>
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+            config: ["MMLorHTML.js"], jax: ["input/TeX"],
+        //  jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">计算机视觉</h1>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+<hr  />
+<p>
+根据李菲菲的视觉课参考的相应章节
+</p>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="done DONE">DONE</span> F&amp;P ch7 线性滤波</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">移不变线性系统</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+卷积表示了一大类系统的性质。特别的，大多数图像系统可以高度近似成具有以下三个重要性质：
+</p>
+<ul class="org-ul">
+<li><b>叠加性</b> ：表示为
+</li>
+</ul>
+<p>
+$$R(f+g)=R(f)+R(g)$$
+这意味着，对一组混合激励的响应等于对单个激励响应的和。
+</p>
+<ul class="org-ul">
+<li><b>按比例放缩</b> ：对零输入的响应是零。与叠加性类似，对一个按比例缩放输入的响应等于对输入响应的按比例缩放，也就是说：
+</li>
+</ul>
+<p>
+$$R(kf)=kR(f)$$
+同时具有叠加性和按比例缩放性质的系统，称为 *线性系统*。
+</p>
+<ul class="org-ul">
+<li><b>位移不变性</b> ：在位移不变性系系统中，对转移了位置的激励的响应等于对原激励的响应产生相同的位移。
+</li>
+</ul>
+
+<p>
+一个同时满足线性和移不变性的系统称为 <b>移不变线性系统</b> ，或简称为系统。
+</p>
+</div>
+<div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1">离散卷积</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+可以看出，作为一个系统，只要知道系统对0位移处的单位响应，就可以得到任何一个输入向量（或矩阵）的响应。响应的形式可以写成脉冲响应与输入的卷积。比如照相机系统，它是一个移不变线性系统，即任何处对光的响应都可以是零点处对同样光强度（频率）响应然后平移，并且满足线性公式。因此，我们只要知道这个系统对单位强度（频率）的光在零点处的响应，那么对于一张图片上任意位置都是不同光强（频率）时也可以通过卷积的方式得到响应。
+</p>
+
+<p>
+一般所谓的卷积模板或核也可以看作一个系统。这时，输入是图片，通过这个系统得到输出。这个系统满足上面定义，因此可以做卷积。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2">连续卷积</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+得到对脉冲的响应并做一种积分的方式称为卷积。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">傅里叶变换</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+将基变为一些列正弦函数，把信号表示为无限个正弦函数的无限加权和。这意味着信号的快速变化是明显的，因为它们在新的基中对应于高频正弦项的高幅值。
+</p>
+
+<p>
+傅里叶变换包含一个实部和一个虚部，考虑复函数的幅度和相位，并分别画出，因而分别称为幅度谱和相位谱（以二维的频率u，v为坐标）。图像的幅度谱经常是相似的。这一点看起来是自然现象，而不是定理证明。因此，图像的幅度谱提供的信息相当有限。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3">采样</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+从一个连续函数（比如到达照相机系统的亮光）得到一组离散点上的数值（就像照片中每一个像素值）称为采样。构建一个模型，可以准确地得到采样中丢失了什么样的信息。
+</p>
+
+<p>
+用形式化模型的术语，对一个二维函数（而不是一维函数）进行采样时，得到一个矩阵。
+</p>
+</div>
+<div id="outline-container-sec-1-3-1" class="outline-4">
+<h4 id="sec-1-3-1">折叠失真</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+采样中会有信息的丢失。采样过慢的信号会显示错误的结果，原始信号中的高频空间元素在采样信号中会表现为低频元素——这种效应称为折叠失真。
+</p>
+
+<p>
+采样信号的傅里叶变换：采样信号是原始信号和钉床函数结合的产物。根据卷积定理，两个函数乘积的傅里叶变换是两个函数傅里叶变换的卷积，这意味着采样信号的傅里叶变换等于函数的傅里叶变换同另一个钉床函数傅里叶变换的卷积。
+</p>
+
+<p>
+由于将一个函数同一个位移 \(\delta\) 函数卷积知识位移了这个函数。这意味着采样信号的傅里叶变换是信号的一系列傅里叶变换位移版本的和。
+</p>
+
+<p>
+函数的傅里叶变换后的频率并不是充满整个频率空间，而是有最大值，即原函数有最大频率。比如正弦函数傅里叶变换后就只有一个频率值。用一定频率对函数进行采样后，对采样后的值做傅里叶变换等于对原函数做傅里叶变换并平移。因此只要平移后没有交叠，就可以使用采样傅里叶变化的逆变换来准确得到原信号，这里涉及奈奎斯特定理。这里要证明采样后的傅里叶变换是原函数傅里叶变换的平移。这非常重要。可以通过这个证明奈奎斯特定理，即为什么采样频率要两倍的最高频率才能重建。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="todo TODO">TODO</span> 平滑与重采样</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+根据奈奎斯特定理，不能对一个图像取每k个像素的方法进行压缩。因为只有采样频率为原图像最高频率2倍才能复原。因此，如果将从原图像中去掉高于采样频率的空间频率，这样采样后的图像可以完全得到原图像去掉高频后的图像，这样的图像没有折叠失真，但因为去掉高频，所以会损失细节。这可以通过将原图像的傅里叶变换与二维删函数相乘实现，删函数是低通滤波。也可以让原函数卷积。
+</p>
+
+<p>
+也可以使用高斯函数滤波，因为高斯函数变换到频域时也是高斯函数，它对低频响应大，对高频响应小。因此可以抑制高频分量，减少折叠失真。
+</p>
+
+<p>
+事实上高斯函数不是一个特别好的低通滤波器。
+</p>
+
+<p>
+算法图像的二倍重采样：
+</p>
+<ol class="org-ol">
+<li>对原图像使用低通滤波器（ \(\sigma\) 在1～2个像素之间的高斯函数通常是适合的选择）
+</li>
+<li>产生一个新的图像，边的维度是原始图像的一般：把新图像第i，j个像素的值设置为滤波后图像的第2i，2j个像素。
+</li>
+</ol>
+
+
+<hr  />
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="todo TODO">TODO</span> F&amp;P ch8</h2>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="todo TODO">TODO</span> F&amp;P ch15.2.2</h2>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="todo TODO">TODO</span> Szeliski ch4.1.1</h2>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="todo TODO">TODO</span> F&amp;P ch1-3</h2>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="todo TODO">TODO</span> H&amp;Z ch6</h2>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="todo TODO">TODO</span> H&amp;Z ch10</h2>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="todo TODO">TODO</span> F&amp;P ch10</h2>
+</div>
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="todo TODO">TODO</span> F&amp;P ch14.2</h2>
+</div>
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10"><span class="todo TODO">TODO</span> F&amp;P ch14.4</h2>
+</div>
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11"><span class="todo TODO">TODO</span> Szeliski ch8.4,8.5</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"></p>
+</div>
+</body>
+</html>

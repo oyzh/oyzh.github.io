@@ -38,6 +38,8 @@
 
 * 卷积神经网络
 卷积神经网络是被设计来处理来自多维数组的数据，比如表示三个颜色通道强度的三个二维数组的彩色图片。许多数据可以表示成多维数组的形式：信号和序列是一维的，包括语言;图像和声谱是二维的;视频和立体图(volumetric imagas)是三维的。在卷积神经网络背后有四个从自然信号中得到的关键点：局部连接（local connections）、shared weight、pooling和多层的使用。
+
+一个典型的CNN是多层的结构。第一部分是由两种类型的层构成：卷积层和pooling层。卷积层的单元是用来映射特征，每一个单元通过一个
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

@@ -15,12 +15,12 @@
 * TODO 论文两篇
 1. deep learning
 2. 另一篇在CVPR2015上选或一篇经典论文。
-* TODO 离散优化作业
+* DONE 离散优化作业
 两周未做的作业。
 * TODO ppt
 做要讲的ppt，包括SIFT论文和SVM。
 * TODO 代码
-JABBA，Matlab，Opencv。
+JABBA，Matlab，Opencv,SOS,OpenTLD
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>
@@ -28,3 +28,12 @@ JABBA，Matlab，Opencv。
 <a href="http://github.com/oyzh">Github</a>
 #+END_HTML
 * TODO 计算机视觉作业
+* TODO deep learning书
+** DONE 第一章
+** DONE 第二章
+** TODO 第三章
+* TODO 线性代数课程
+* TODO 操作系统
+* TODO 体系结构
+GPU相关，论文，编程，cuda。
+* TODO 计算理论

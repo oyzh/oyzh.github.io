@@ -103,6 +103,79 @@ $$p(a,b,c)=p(a)p(b|a)p(c|b)$$
 
 在求函数最小值时，我们可以通过小步的移动x来使 $f(x)$ 变小，这个x变化的方向是沿着梯度的反方向。这种技术被称为梯度下降(gradient descent)。
 这会涉及全局最优和局部最优。在深度学习中，我们的优化函数可能有很多局部最优不是全局最优的。并且会有很多平的区域。因此我们通常寻找一个足够小但不必是最小的。
+* 机器学习基础
+** 学习算法
+一个机器学习算法是一个可以从数据中学习的算法。
+*** 任务，T
+机器学习可以使我们解决很困难的问题，这些问题不能通过人设计实现的固定程序来解决。机器学习可以解决许多任务：
++ /*分类*/ : 比如对象识别，输入为一张图片（由代表亮度的像素集合描述），输入是一个指明物体类别的数字编码。
++ /*聚类*/ 
++ /*回归*/ : 和分类问题很像，但是输出的模式不一样。
++ /*转换（Transcription）*/ ： 在这类任务中，机器学习系统被要求发现某些种类数据的相关的无结构的一种表述，并把它转化成离散的、文本的形式。例如在光学字符识别（OCR）中，输入给计算机程序一张有文本的图片，要求移字符序列的形式返回图片上的文本（例如以ASCII或Unicode形式）。另一个例子是语音识别，输入计算机的是声波，要求以字符序列的形式输出录音里的讲话。
++ /*翻译*/
++ /*结构化输出（Structured output*/ : involve any task where the output is a vector containing important relationships between the different elements.这是很大一类，包含了上买能的转换和翻译，但还有其他的任务。一个例子是语法分析——将一个自然语言句子映射为一个语法分析树。 These tasks are called structured output tasks because the program must output several values that are all tightly inter-related. For example, the words produced by an image captioning program must form a valid sentence.
++ /*异常检测*/ : 计算机程序过滤一个事件和对象的集合，标记其中不寻常或非典型的元素。
++ /*综合与采样（Synthesis and sampling）*/ : 机器学习算法来生成和训练数据相识的新的例子。对于媒体应用非常有用，因为艺术家通过手工生成大量的内容是很昂贵和无趣的。
++ /*丢失量归属*/ : 在这个任务中，机器学习的算法是给予一个新的例子 $\vec x\in R^n$ 但是 $\vec x$ 中的某些属性 $x_i$ 丢失了，算法需要给丢失的属性提供一个预测值。
++ /*去噪*/ : 这类任务中，输入为一个干净的例子被添加未知类型的噪音的有噪的例子，需要根据这个预测干净的例子，或给出条件概率。
++ /*密度或概率函数估计*/ : 
+
+其他。
+*** 性能度量，P
+为了评估机器学习算法的能力，我们必须设计一个归于性能量化操作。
+*** 经验，E
+机器学习可以根据在学习期间得到经验的类型分为无监督和有监督的。
+
+本书中的大多书的学习算法可以将经验理解为一个数据集。数据集是一个许多称为例子的对象的集合。
+
+Unsupervised learning algorithms experience a dataset containing many features,then learn useful properties of the structure of this dataset. In the context of deep learning, we usually want to learn the entire probability distribution that generated a dataset, whether explicitly as in density estimation or implicitly for tasks like synthesis or denoising. Some other unsupervised learning algorithms perform other roles, like dividing the dataset into clusters of similar examples.
+
+Supervised learning algorithms experience a dataset containing features, but each example is also associated with a label or target. For example, the Iris dataset is annotated with the species of each iris plant. A supervised learning algorithm can study the Iris dataset and learn to classify iris plants into three different species based on their measurements.
+
+Roughly speaking, unsupervised learning involves observing several examples of a random vector x, and attempting to implicitly or explicitly learn the probability distribution p(x), or some interesting properties of that distribution, while supervised learning involves observing several examples of a random vector x and an associated value or vector y , and learning to predicty from x, e.g. estimating p(y | x). The term supervised learning originates from the view of the target y being provided by an instructor or teacher that shows the machine learning system what to do. In unsupervised learning, there is no instructor or teacher, and the algorithm must learn to make sense of the data without this guide.
+
+** 容量、过拟合、欠拟合
+将机器学习与最优化i问题区分开来的是机器学习需要generalization error，或者被叫做测试错误来最小化。怎样仅仅通过训练集和来影响对测试集合的性能？统计学习理论提供了某些答案。
+
+We can control whether a model is more likely to overfit or underfit by altering its capacity. Informally, a model’s capacity is its ability to fit a wide variety of functions. Models with low capacity may struggle to fit the training set. Models with high capacity can overfit, i.e., memorize properties of the training set that do not serve them well on the test set.
+
+参数化的模型如线性回归，非参数化的模型如最临近算法。
+
+*** 没有免费的午餐理论（The No Free Lunch Theorem）
+The no free lunch theorem for machine learning (Wolpert, 1996) states that, averaged over all possible data generating distributions, every classification algorithm has the same errorrate when classifying previously unobserved points. In other words, in some sense,no machine learning algorithm is universally any better than any other. The most sophisticated algorithm we can conceive of has the same average performance (over all possible tasks) as merely predicting that every point belongs to the same class.
+这表明没有一个通用的机器学习算法可以对所有任务有好的效果。因此我们要做的是对某一具体的任务设计好的算法，如果我们可以假设真是世界中的应用的概率分布，我们就可以有针对的设计算法。因此机器学习研究的目的不是找到一个针对所有问题的最好的算法，相反，我们的目标是选择那种机器学习算法对我们关心的数据有好的效果。
+** 类型参数与验证集
+大多数机器学习算法都有几个设置，使用这几个设置可以来控制学习算法的行为。这些设置就是类型参数。类型参数的值不是通过学习算法自己来调整的（因此要调参）。比如调节过拟合的 $\lambda$
+
+我们总是从训练集里构造验证集。我们将训练数据分成不相关的两部分。其中一个子集用来学习参数。另一个自己就是验证集，用来估计测试时的测试误差，使得类型参数能够相应得到更新。用来指导选择类型参数的子集被称为验证集。
+*** 交叉验证
+当数据很少时，测试数据会很少，k-fold cross-validation。
+** 估计，偏差和方差
+在机器学习中应用统计学工具。
+*** 点估计
+注意，估计量是随机变量的一种组合，因此也是随机变量。
+*** 偏差
+因为估计量是随机变量，我们可以判断这个随机变量的期望，如果估计量的期望等于真是值，则是无偏的。
+
+对于方差，我们有两种估计量，一个是有偏，一个无偏，但是它们都不是最好的估计量。我们通常使用有偏的估计量，因为它有一些比较重要的性质。
+*** 方差和标准差
+除了可以计算估计量的期望，还可以计算它的方差。对于方差的估计量，虽然第一个是有偏的，但是它的方差比第二个无偏的小。
+*** 平衡（trade off）：偏差与方差与均方误差
+偏差和方差是衡量两个不同估计量的的两种方式。那么对于两个估计量，一个偏差大，一个方差大，应该选择哪一个呢？
+
+在机器学习中，最通用的也从经验上来说成功的方式是平衡方式，一般是交叉验证。另一种是我们可以比较估计量的均方误差（mean squared error）：
+\begin{eqnarray*}
+MSE &=&E[({\hat \theta}_n-\theta)^2]\\
+&=&Bias({\hat \theta}_n)^2+Var({\hat \theta}_n)
+\end{eqnarray*}
+*** 一致性（Consistency）
+我们希望当我们的测试数据增加时，我们的预测值可以集中到真实值上，即：
+$$lim_{n \to \infty}{\hat \theta}_n \stackrel{p}{\longrightarrow} \theta^2$$
+不偏不等于一致。比如假设预估计量就是第一个随机变量，则这个估计量一定是无偏的，但是这却不满足一致性。
+** 最大似然估计
+前面我们定义了一些估计量和分析了它们的属性。但是这些估计量是哪里来的？不是通过猜测某些函数可能是一个好的估计量然后分析它的偏差和方差，我们想要某些方法可以是我们对于不同的模型都可以得到好的估计量的函数。最通用的方法是最大似然法则。这里是指已知模型而对模型的参数进行估计。
+
+
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

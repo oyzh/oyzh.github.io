@@ -184,7 +184,7 @@ for the JavaScript code in this tag.
 </script>
 <hr  />
 <p>
-根据李菲菲的视觉课参考的相应章节
+根据李飞飞的视觉课参考的相应章节
 </p>
 <div id="outline-container-sec-1" class="outline-2">
 <h2 id="sec-1"><span class="done DONE">DONE</span> F&amp;P ch7 线性滤波</h2>
@@ -310,23 +310,173 @@ $$R(kf)=kR(f)$$
 <li>产生一个新的图像，边的维度是原始图像的一般：把新图像第i，j个像素的值设置为滤波后图像的第2i，2j个像素。
 </li>
 </ol>
-
-
-<hr  />
-<a href="http://oyzh.github.io">Back to Homepage</a>
-<br>
-<a href="http://github.com/oyzh">Github</a>
 </div>
 </div>
 </div>
 <div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="todo TODO">TODO</span> F&amp;P ch8</h2>
+<h2 id="sec-2"><span class="done DONE">DONE</span> F&amp;P ch8 边缘检测</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+图像中亮度明显而急剧的变化的点通常称为边缘或边缘点。
+</p>
+</div>
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">噪声</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+边缘处理中一个重要的问题就是图像噪声。这是因为边缘检测器是为了响应急剧变化而构造的;噪声使得图像导数有限差分估计变得不可再用。我们用这个观察结果作为研究一般图像中噪声的推动力。
+</p>
+
+<p>
+噪声这个术语通常表示无法获取信息的图像度量或者与图像中所包含的无关信息的图像度量，其余的则都是信号。认为噪声不包含信息的看法是错误的——例如，我们可以通过在一个黑暗的房间中，使用盖上镜头盖的照相机拍一张照片从而获取到该照相机的温度的估计。此外，由于在没有噪声模型的情形下，无法确定噪声的意义，所以，认为噪声是没有模型的看法是错误的。噪声是我们并不需要使用的任何信息，这就是它的全部。
+</p>
+</div>
+<div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1">可加性静态高斯噪声</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+在可加性静态高斯噪声模型中，每个像素点都相互独立地加入上一个根据同一个高斯概率分布产生的值。几乎所有这种分布的平均值都是零。标准偏差是这种模型的一个参数。这个模型用于描述照相机中的热噪声。对于线性的导数滤波器，高斯噪声的响应均值是零，但是响应的方差急剧上升。
+</p>
+
+<p>
+线性滤波器对可加性静态高斯噪声的响应：假设一个离散线性滤波器 \(\mathcal G\) 作用在一个平均值为 \(\mu\) 、标准偏差为 \(\sigma\) 的可加性静态高斯噪声所构成的噪声图像 \(\mathcal N\) 。滤波器在i，j点的响应为：
+$$R(\mathcal N)_{i,j}=\sum_{u,v}G_{i-u,j-v}N_{u,v}$$
+可以求得对噪声的响应的期望和方差，期望为：
+$$E[R(\mathcal N)]=\mu \sum_{u,v}G_{i-u,j-v}$$
+方差为：
+$$E[\{R(\mathcal N)_{i,j}-E[R(\mathcal N)_{i,j}]\}^2]={\sigma}^2 \sum G_{u,v}^2$$
+通过上面的式子可以看到，对于一般n阶导数滤波器，高斯噪声的响应均值为零，但是响应的方差急剧上升（因为后面是平方）。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">导数估计</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+简单的有限差分滤波器能够对噪声产生强烈的响应，于是使用两个有限差分滤波器（每个方向一个）将是一个求梯度的不好的方法。处理这个问题的方法是对图像平滑后求道（同样也会平滑导数）。在实际中，图像几乎总是被高斯滤波器平滑过的——事实上，有限差分操作是平滑过的。这将讨论为什么平滑是有用的，以及为什么高斯滤波器是一个平滑滤波器的很好选择。
+</p>
+
+<p>
+平滑一个函数，然后求其导数相当于将其与一个平滑的核函数的导数进行卷积。因此只需与高斯函数的导数求卷积，而不必先卷积然后求微分。
+</p>
+</div>
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">为什么平滑是有作用的</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+一般来说，任何对我们有意义的变化都将影响一堆像素点。例如，一个物体的轮廓将会导致在图像上一长条链状的像素点有较大的导数值。对于很多噪声模型而言，一些来源于噪声的大的导数值主要是局部事件。这表明平滑一个差分过的图像更倾向与支持那些感兴趣的变化，并且抑制噪声的影响。
+</p>
+
+<p>
+对为什么平滑是有用的，可有另一种解释。假设先平滑一个噪声图像，然后进行微分。首先，噪声的方差会由于平滑核函数而减小，这是因为我们倾向于使用的平滑核函数，且有：
+$$\sum{uv}G_{uv}=1$$
+也就是说：
+$$\sum{uv}G_{uv}^2 \le 1$$
+</p>
+
+<p>
+其次，像素有变得与相邻的像素相似的倾向——如果使用可加性静态高斯噪声来平滑，结果信号的像素值不再是独立的。在某种意义上，这就是平滑的意义所在——平滑是根据器邻近像素值来推断一个像素值的方法。无论如何，如果像素倾向于与邻近的像素相同的话，那么其导数必然也将变小（因为导数表示的就是一个像素与其相邻像素值的差异的大小）。
+</p>
+
+<p>
+另一个途径是根据空间频率来解释。可以知道，可加性静态高斯噪声在各个频率有着相同分布的能量。如果将噪声进行微分，就加重了高频。如果不试图去修正这个情况，则在梯度图中将会由于噪声的影响而产生偶然出现的过大值。使用一个高斯滤波器将抑制这些高频（高斯滤波器类似一个低通滤波器），就好像它对重采样所起的作用一样。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">为什么使用高斯平滑</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<ul class="org-ul">
+<li>效率：通过对一个已经频化过的图像进行平滑从而得到深度平滑的图像
+</li>
+<li>中心极限定理：对一个重要的函数族来说，将函数族中任意一个成员不断与自己卷积，最终将生成一个高斯函数。这意味着，如果我们选择一个不同的平滑核函数，并且重复地施加在图像之上，通过卷积的结合律性质，则最终的结果就像我们呢使用了高斯函数来平滑该n图下一样。
+</li>
+<li>高斯函数是可分离的：二维的高斯函数可以分解成两个一维的高斯函数。
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">对边缘进行检测</h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="todo TODO">TODO</span> 使用拉普拉斯算子在检测边缘</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+注意，这里找的是过零点，也就是从负到正或从正到负，而不是直接找零点，因为一阶导数区域为常数时拉普拉斯也是零，但这就不是边缘点。
+</p>
+
+<p>
+这里的LoG和斑点检测中的LoG的区别？
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2">基于梯度的边缘检测器</h4>
+</div>
+</div>
 </div>
 <div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="todo TODO">TODO</span> F&amp;P ch15.2.2</h2>
+<h2 id="sec-3"><span class="done DONE">DONE</span> F&amp;P ch15.2.2 镜头的边界检测</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+较长的视频流是由一系列镜头组成的——镜头指的是基本上显示的是统一物体的较短视频流。一般来说，这些镜头是编辑过程的产物。很少有两镜头在何处衔接的记录。用一些镜头来表示一段视频是很有用的，而每一个镜头又可以用关键帧表示。这种表示可以用于视频的检索或者概括视频内容以便用户进行浏览。
+</p>
+
+<p>
+自动地寻找这些镜头的边界——镜头的边界检测——是简单分割算法的一个重要而可行的应用。镜头边界检测算法必须在视频中找出哪些和上一帧相差很大的帧。检测镜头边界必须考虑到，在给定的镜头内部，物体和背景都可能在视野中移动。一般来说，这种检测采用某种形式的距离度量;如果距离度量大于一个给定阈值，则一个镜头边界被检测到。
+</p>
+<ul class="org-ul">
+<li>帧差分算法：计算视频中两帧对应点之间的差，然后求差的平方和。
+</li>
+<li>基于直方图算法：计算每一帧的色彩直方图，并计算直方图之间的差。
+</li>
+<li>块比较算法：将帧切分成许多小的网格，通过比较这些小的格子来比较两帧。
+</li>
+<li>边缘差分算法：计算每一帧的边缘图，然后比较这些边缘图。
+</li>
+</ul>
+</div>
 </div>
 <div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="todo TODO">TODO</span> Szeliski ch4.1.1</h2>
+<h2 id="sec-4"><span class="done DONE">DONE</span> Szeliski ch4.1.1 特征检测器</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+怎样才能找到能够在其他图像中稳定匹配的图像位置，也就是说，什么是适合跟踪的特征。
+</p>
+
+<p>
+我们在一个晓得位置变化区域 \(\Delta u\) 内，通过与原图像块进行比较来计算这个匹配结果的稳定度，这就是通常所说的“自相关函数”（即Harris中角点检测中的使用的一步）。
+$$E_{AC}(\Delta u)=\sum_iw(x_i)[I_0(x_i+\Delta u)-I_0(x_i)]^2$$
+$$E_{AC}(\Delta u) \approx \Delta u^T A \Delta u$$
+这里A是卷积：
+$$A=w*\left[ \begin{array}\\
+I_x^2&I_xI_y\\
+I_xI_y&I_y^2\\
+\end{array} \right]$$
+对于上式的理解是：先通过算子求得每个点的x方向和y方向的偏导数，可以将右边的矩阵看成是深度为四（或者三，因为 \(I_xI_y\) 有两个）的图像，用加权核w对每个通道进行卷积，也就是每一个点上是一个卷积后的矩阵，这就是自相关矩阵。通过矩阵可以得到一些兴趣点，比如Harris角点。
+下面的算法总结了一个基本的基于自相关矩阵关键点检测的步骤：
+</p>
+<ol class="org-ol">
+<li>通过高斯函数的导数对原始图像进行卷积来计算图像在水平和垂直方向上的导数 \(I_x\) 和 \(I_y\) 。
+</li>
+<li>计算对于于这些梯度外积的三个图像。（因为矩阵是对称的）。
+</li>
+<li>使用一个较大的高斯函数来对这些图像中的每一个进行卷积。
+</li>
+<li>使用判断兴趣点的公式中的任何一个来计算一个标量兴趣量。
+</li>
+<li>寻找一定阈值之上的局部最大值，并将g它们作为检测到的特征点位置。
+</li>
+</ol>
+<p>
+以上算法基于最大化空间稳定性，这种点是通过计算自相关矩阵，并根据矩阵的一些特征来判断点是否稳定。所谓最大化空间稳定性就是指可以最稳定的从变化了之后的图片中检测出来。
+</p>
+</div>
 </div>
 <div id="outline-container-sec-5" class="outline-2">
 <h2 id="sec-5"><span class="todo TODO">TODO</span> F&amp;P ch1-3</h2>
@@ -348,6 +498,21 @@ $$R(kf)=kR(f)$$
 </div>
 <div id="outline-container-sec-11" class="outline-2">
 <h2 id="sec-11"><span class="todo TODO">TODO</span> Szeliski ch8.4,8.5</h2>
+</div>
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12">Some Problem</h2>
+<div class="outline-text-2" id="text-12">
+<ul class="org-ul">
+<li>Laplacian of Gaussian 是检测边缘和斑点都可以吗。
+</li>
+<li>为什么在兴趣点检测中用高斯加权就可以得到旋转不变的兴趣点，而一般的矩形不行（Harri角点）。
+</li>
+</ul>
+<hr  />
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">

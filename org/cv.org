@@ -138,6 +138,7 @@ I_xI_y&I_y^2\\
 * Some Problem
 + Laplacian of Gaussian 是检测边缘和斑点都可以吗。
 + 为什么在兴趣点检测中用高斯加权就可以得到旋转不变的兴趣点，而一般的矩形不行（Harri角点）。
++ SIFT中怎样使用通用霍夫变换。
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

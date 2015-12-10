@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>通用霍夫变换</title>
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+            config: ["MMLorHTML.js"], jax: ["input/TeX"],
+        //  jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">通用霍夫变换</h1>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+<hr  />
+<p>
+本文主要根据论文：Generalizing The Hough Transform To Detect Arbitrary Shapes. D. H. Ballard.
+</p>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">解析曲线的霍夫变换</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+解析曲线就是可列解析式的曲线，形式化为：
+$$f(\textbf{x,a})=0$$
+其中 \(\textbf x\) 是图像点， \(\textbf a\) 是参数向量。假设我们想得到园的方程：
+$$(x-a)^2+(y-b)^2=r^2$$
+假设已知边缘的点，同时知道点的梯度（方向、大小）。可以将x和y看作已知量，将a、b和r看成变量。通过每一个点对参数空间投票，参数空间中的公共点就是要求的参数。可以看到，已知x和y时，在参数空间得到的图像是一个圆锥。
+</p>
+</div>
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">方向信息</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+如果我们利用方向信息，可以将上面的圆锥降低为一条直线。因为点(x,y)对应的园的中心应该在梯度方向上。所以假设我们已经知道每一点的梯度，因此可以利用这个信息来降低运算：
+由等式 \(f(\textbf{x,a})=0\) 两边同时取x的偏导数：
+$$\frac{df}{dx}(\textbf{x,a})=0$$
+又因为梯度方向指向圆心，所以：
+$$\frac{dy}{dx}=tan[\phi(\textbf x)-{\frac \pi 2}]$$
+\(\phi(\textbf x)\) 是梯度方向。因此有以下算法：
+</p>
+
+<p>
+对于灰度图像中解析曲线的霍夫变换。对于一个给定的带有参数向量 \(\textbf a\) 的曲线 \(f(\textbf {x,a})=0\) 。建立一个数组 \(A(\textbf a)\) ，初始化为零。这个向量是作为一个累加器向量。然后对于每一个属于边缘的像素点 \(\textbf x\) ，计算在 \(f(\textbf{x,a})=0\) 和  \(df/dx(\textbf{x,a})=0\) 的条件下的所有 \(\textbf a\) ，同时增加对应的累加器数组条目：
+$$A(\textbf a):=A(\textbf a)+1$$
+当每一个 \(\textbf x\) 点都计算过之后，数组A中的局部最大值的索引就是图片中对应的曲线 \(f\) 的参数向量。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2">错误补偿</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+在数组中直接寻找最大值有一个问题，就是不精确的测量值会使使得许多参数落在真实值附近。一种方法是采用附近的点而不是单个点。另一种方法是在增长数组值后使用一个函数来使该点附近的点得到一定的增长，这种操作的影响是平滑了累加器数组。可以得到平滑操作与方向梯度和半径的不确定调节是等价的。
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">通用霍夫变换</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+为了得到对非解析曲线的霍夫变换，我们对一般曲线定义以下几个参数：
+$$\textbf {a=\{y,s},\theta\}$$
+将模板曲线定义为多个边界点和参考点组成的点集。 \(\textbf y=(x_r,y_r)\) 是作为形状的一个参考初始点。其他两个参数是尺度变化参数和方向变化参数
+</p>
+</div>
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">早期工作：二值图像中的任意形状</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+用与初始点相关的边界点 \(\{\textbf x_B\}\) 来描述形状。
+</p>
+
+<p>
+Merlin-Farber霍夫变换算法：没有梯度信息的非解析曲线 \(\textbf{a=y}\) 注意这里是简单应用，没有尺度和旋转变化。初始化二维累加器数组为零，对于每一个像素 \(\textbf x\) 和每一个边缘点 \(\textbf X_B\) ，计算 \(\textbf{a=x-}\textbf x_{\textbf B}\) ，并增加相应的项，最后数组局部最大值就是要检测的形状。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">任意形状的检测</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+这里要利用梯度信息，建立R-table，根据梯度角作为R-table的索引，里面保存着有此梯度角的边界点相对参考的改变量。假设有要匹配的模板原图和提取出的代表边界点的点集，同时有要匹配的图，具体的算法步骤如下：
+</p>
+<ol class="org-ol">
+<li>在模板中选取一个参考点。
+</li>
+<li>在模板原图中计算梯度角，即求图片中每一点梯度的方向。
+</li>
+<li>将边界点集中对应原图上的点根据梯度角度（通常是投入多个bin中）在对应的R-table中加入边界点与参考点之差。
+</li>
+<li>循环3知道遍历所有边界点。
+</li>
+</ol>
+<p>
+这样，R-table中有我们自己定义个数个不等长的数组，所有元素加起来等于边界点的个数。R-table建立后就可以用来投票。
+</p>
+
+<p>
+构建R-table算法：为shape选择一个参考点 \(\textbf y\) ，对于每一个边界点 \(\textbf x\) 计算梯度方向 \(\phi(\textbf x)\) 和  \(\textbf{r=y-x}\) ，将 \(\textbf r\) 存为 \(\phi\) 的一个函数。
+</p>
+
+<p>
+<b>这里有一个疑问，即使用原图像的梯度信息，虽然这样可以得到比较好的结果，但是对外表变化敏感（需要测试），可以看到很多时候背景会影响，是否可以使用曲线边的梯度角信息？是否可以使用梯度大小的信息？</b>
+</p>
+
+<p>
+单个shape的generalized Hough algorithm：对于图像中的每一个点 \(\textbf x\) ，increment all the corresponding points \(\textbf{x+r}\) in the accumulator array \(\textbf A\) where \(\textbf r\) is a table entry indexed by \(\phi\) ,i.e, \(\textbf r (\phi)\) .Maxima in \(\textbf A\) correspond to possible instances of the shape \(\textbf S\).
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">R-table性质</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+上面考虑都是固定方向和尺度的情况。因此累加器数组是二维数组，如果加上方向 \(\theta\) 和尺度 \(s\) 。就变成四维数组。简单的变化R-table表就可以适应这两种变化，比如如果尺度被乘上 \(s\) ，那么变化之后的表计为 \(T_s\) ，则有：
+$$T_s[R(\phi)]=sR(\phi)$$
+也就是说所有的向量都被乘上s。如果一个对象旋转了 \(\theta\) 之后表变为 $T<sub>&theta;</sub>$，则有：
+$$T_{\theta}[R(\phi)]=Rot\{R[(\phi-\theta)mod2\pi],\theta\}$$
+也就是所有的索引都增加了 \(-\theta\) 模 \(2\pi\) 。
+</p>
+
+<p>
+在实际的程序中，计算了R-table之后，要匹配的图片先计算出所有的边界点，并计算所有的的梯度方向，建立四维投票数组，然后有两重的旋转和尺度的循环，根据选择和尺度变化之后的方向角对应的点进行投票。最后寻找局部最大值得到结果。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">其他</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+还有几个点没有讨论，一个是多个shape情况，还有就是采用卷积模板。代码在<a href="https://github.com/oyzh/CV/tree/master/GHT">这里</a>。
+</p>
+<hr  />
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

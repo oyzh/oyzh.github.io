@@ -1,0 +1,29 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:BOW-词袋模型
+#+OPTIONS: toc:nil
+词袋模型是从文本识别中借鉴到视觉中的方法。这种方法对文本建模时不考虑整体的结构，只是简单的根据单词出现的规律来判断文件类型。比如一共有m篇文章，每一篇有一个类别，像是新闻、娱乐或体育等。统计出现在这些文章中的所有词，把这些词作为一个字典，这里假设一共出现过n个词。之后统计每一篇文章的词的个数，每一篇文章可以构成一个n维向量。这样，一共有m个n维向量，并且有m个对应每一个向量的label。在得到m个向量后就可以构造分类器，并使用这个分类器来对新的文章生成的向量进行预测。对于新的要求分类的文章，我们做同样的操作，统计它在字典中每个词的个数，所有也构成n维向量用来预测。
+
+视觉中使用的词袋模型和这个非常相似。首先是如何构造词典。可以用特征描述子来作为单词，像使用SIFT特征，但是这样空间太大，需要采用聚类的方法的到k个聚类，聚类方法会返回每一个类的中心点。每一个聚类作为一个“单词”，因此我们一共的到k个单词构成的字典。对于每一张图片可以的到一个k维的向量，具体过程是：计算图片的所有特征描述子，每一个描述子归于与之最近的一个类，这样k维向量的每一分量值代表图片在这个类中有描述子的个数。这样我们就将每一张图片建模为一个k维的向量。可以用l张训练照片得到l个k维向量，并且每一张照片有一个label，因此有l个label。使用这些数据进行训练，得到一个分类器。测试数据也计算出这样的一个k维向量，然后使用得到的分类器进行分类。
+
+在构建这个模型中使用的工具有：k-means聚类算法、SIFT（或其他的生成描述子的算法如SURF）、SVM（或其他分类方法如knn）。
+
+对这种方法还有许多改进和提升的方法，比如采用金字塔等。
+
+可以参考[[https://en.wikipedia.org/wiki/Bag-of-words_model_in_computer_vision][wiki]] 和后面的的References。
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

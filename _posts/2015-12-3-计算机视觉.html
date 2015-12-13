@@ -479,7 +479,7 @@ I_xI_y&I_y^2\\
 </div>
 </div>
 <div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="todo TODO">TODO</span> F&amp;P ch1-3 摄像机</h2>
+<h2 id="sec-5"><span class="done DONE">DONE</span> F&amp;P ch1-3 摄像机</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 在第一版是1-3章，第二版综合到了一章。
@@ -643,16 +643,77 @@ $$\cal T=
 \cal A &amp; \textbf t<br  />
 0<sup>T</sup> &amp; 1
 \end{pmatrix}$$
-为一个 <b>仿射变换</b> 。
+是一个 <b>仿射变换</b> ，若 \(\cal T\) 是非奇异的任意4×4矩阵，我们称其为 <b>投影变换</b> 。仿射变换和投影变换都构成群。
 </p>
 </div>
 </div>
-<div id="outline-container-sec-5-3-2" class="outline-4">
-<h4 id="sec-5-3-2">摄像机参数和透视投影</h4>
-</div>
-</div>
-</div>
 
+<div id="outline-container-sec-5-3-2" class="outline-4">
+<h4 id="sec-5-3-2"><span class="todo TODO">TODO</span> 摄像机参数和透视投影</h4>
+<div class="outline-text-4" id="text-5-3-2">
+<p>
+还有具体的推导没有做。
+</p>
+
+<p>
+用一些物理参数表示摄像机坐标与世界坐标系的关系，包括焦距、像素大小、主点的位置、摄像机的位置和方向。
+</p>
+
+<p>
+对于透镜成像，只有当摄像机的焦距、物体深度和成像平面到光心的距离三者满足薄透镜方程时，才能呈现清楚的像。
+</p>
+
+<p>
+内参数:我们可以为摄像机建立一个归一化图像平面，这个平面平行于摄像机的物理成像平面，且到针孔的距离为单位长度，我们可以通过一些参数，写出物理摄像机坐标系和归一化的图像坐标系之间的关系。
+</p>
+</div>
+</div>
+<div id="outline-container-sec-5-3-3" class="outline-4">
+<h4 id="sec-5-3-3"><span class="todo TODO">TODO</span> 摄像机的几何标定</h4>
+<div class="outline-text-4" id="text-5-3-3">
+<p>
+推导没有做。
+</p>
+
+<p>
+摄像机内外参数估计问题（称为几何标定）。摄像机标定后，对每一个成像点都可以确定从光心射出来且经过这个点的一条射线，也可以从图像得到精确的三维测量。
+使用线性方法进行摄像机标定：假设从图像中取了n个特征点，这些点的齐次坐标是已知的。标定过程分为两步：1.计算这个坐标系下摄像机的投影矩阵;2.从投影矩阵估计摄像机内外参数。投影矩阵共有11个独立无关的变量，每一个点和它的投影点可以产生一个线性约束关系。当n&gt;11时，方程一般是没有解的，但是可以在最小二乘的意义上找到解。
+1.估计投影矩阵（多个对应点）。
+2.估计内外参数（投影矩阵可以用摄像机的内外参数表示，因此在得到投影矩阵后，可以恢复这些参数）。
+</p>
+
+<p>
+特征点的一些退化问题可能会引起标定失败。
+</p>
+
+<p>
+径向畸变：由于目标点偏离光轴而引起的畸变。
+</p>
+
+<p>
+应用：机器人定位
+摄像头固定在地面上某个位置，然后通过标记点的形式标定摄像机。在标定了点之后，就可以通过在照片中检测出机器人的位置（图像坐标中），并通过得到变换矩阵计算它在世界坐标中的位置。具体步骤：
+</p>
+<ol class="org-ol">
+<li>标定摄像机（几何标定）。
+</li>
+<li>检测在图片中的位置。
+</li>
+<li>逆变换得到它在世界坐标中的位置。
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-5-3-4" class="outline-4">
+<h4 id="sec-5-3-4">总结</h4>
+<div class="outline-text-4" id="text-5-3-4">
+<p>
+这一章介绍了摄像机的模型，即通过一些参数来描述，它联系了摄像机与外部的世界。并且介绍了得到这些参数的方法。有了这些知识，就可以贯通现实世界与图片，使它们之间有了一个很好的数学模型。
+</p>
+</div>
+</div>
+</div>
+</div>
 <div id="outline-container-sec-6" class="outline-2">
 <h2 id="sec-6"><span class="todo TODO">TODO</span> H&amp;Z ch6</h2>
 </div>

@@ -21,6 +21,11 @@
 对这种方法还有许多改进和提升的方法，比如采用金字塔等。
 
 可以参考[[https://en.wikipedia.org/wiki/Bag-of-words_model_in_computer_vision][wiki]] 和后面的的References。
+
+在实现词袋模型时有几点需要注意：
+1. 像CIFAR-10这样的数据集，图片非常小，因此提取的特征非常少，结果也比较差。还有一点就是整个图片都是物体本身，所有可以采用将图片分割或多少步求一个特征，这样会得到很多的特征。可以使用vl_sift。
+2. 在用kmeans时必须自己决定聚类的个数，这是一个需要调的参数。或者采用可以自己决定聚类个数的其他kmeans算法。
+3. 分类器：knn效果不好，可能需要多分类的SVM。
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

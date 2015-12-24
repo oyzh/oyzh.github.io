@@ -10,31 +10,19 @@
 #+OPTIONS: timestamp:nil
 #+OPTIONS: num:nil
 -----
-#+TITLE:This Week
+#+TITLE:射影几何
 #+OPTIONS: toc:nil
-* DONE 论文两篇
-1. deep learning
-2. 另一篇在CVPR2015上选或一篇经典论文。
-* DONE 离散优化作业
-两周未做的作业。
-* TODO ppt
-做要讲的ppt，包括SIFT论文和SVM。
-* TODO 代码
-JABBA，Matlab，Opencv,SOS,OpenTLD
-* TODO 计算机视觉作业
-* TODO 计算机视觉学习
-* TODO deep learning书
-** DONE 第一章
-** DONE 第二章
-** TODO 第三章
-* TODO 线性代数课程
-* TODO 操作系统
-进程迁移
-* TODO 体系结构、复习
-GPU相关，论文，编程，cuda。
-* TODO 计算理论
-* TODO 离散优化作业、课程
-Matching
+根据《图像处理、分析与机器视觉》第11章：3D视觉和几何。
+
+多视角几何的数学工具是射影几何，多视角集合能够从数学上处理以下三个方面的关系：
++ 场景中的3D点（更一般地说，还有线以及其他简单几何形状）。
++ 摄像机的投影。
++ 3D场景中多个摄像机投影之间的关系。
+
+* 射影几何中的点和超平面
+* 单应性
+单应性也认为是共线或投影变换，是
+
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

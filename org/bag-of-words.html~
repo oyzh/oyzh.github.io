@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>BOW-词袋模型</title>
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+            config: ["MMLorHTML.js"], jax: ["input/TeX"],
+        //  jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">BOW-词袋模型</h1>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+<hr  />
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">BoF（bag of feature）</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+词袋模型是从文本识别中借鉴到视觉中的方法。这种方法对文本建模时不考虑整体的结构，只是简单的根据单词出现的规律来判断文件类型。比如一共有m篇文章，每一篇有一个类别，像是新闻、娱乐或体育等。统计出现在这些文章中的所有词，把这些词作为一个字典，这里假设一共出现过n个词。之后统计每一篇文章的词的个数，每一篇文章可以构成一个n维向量。这样，一共有m个n维向量，并且有m个对应每一个向量的label。在得到m个向量后就可以构造分类器，并使用这个分类器来对新的文章生成的向量进行预测。对于新的要求分类的文章，我们做同样的操作，统计它在字典中每个词的个数，所有也构成n维向量用来预测。
+</p>
+
+<p>
+视觉中使用的词袋模型和这个非常相似。首先是如何构造词典。可以用特征描述子来作为单词，像使用SIFT特征，但是这样空间太大，需要采用聚类的方法的到k个聚类，聚类方法会返回每一个类的中心点。每一个聚类作为一个“单词”，因此我们一共的到k个单词构成的字典。对于每一张图片可以的到一个k维的向量，具体过程是：计算图片的所有特征描述子，每一个描述子归于与之最近的一个类，这样k维向量的每一分量值代表图片在这个类中有描述子的个数。这样我们就将每一张图片建模为一个k维的向量。可以用l张训练照片得到l个k维向量，并且每一张照片有一个label，因此有l个label。使用这些数据进行训练，得到一个分类器。测试数据也计算出这样的一个k维向量，然后使用得到的分类器进行分类。
+</p>
+
+<p>
+在构建这个模型中使用的工具有：k-means聚类算法、SIFT（或其他的生成描述子的算法如SURF）、SVM（或其他分类方法如knn）。
+</p>
+
+<p>
+对这种方法还有许多改进和提升的方法，比如采用金字塔等。
+</p>
+
+<p>
+可以参考<a href="https://en.wikipedia.org/wiki/Bag-of-words_model_in_computer_vision">wiki</a> 和后面的的References。
+</p>
+
+<p>
+在实现词袋模型时有几点需要注意：
+</p>
+<ol class="org-ol">
+<li>像CIFAR-10这样的数据集，图片非常小，因此提取的特征非常少，结果也比较差。还有一点就是整个图片都是物体本身，所有可以采用将图片分割或多少步求一个特征，这样会得到很多的特征。可以使用vl<sub>sift。</sub>
+</li>
+<li>在用kmeans时必须自己决定聚类的个数，这是一个需要调的参数。或者采用可以自己决定聚类个数的其他kmeans算法。
+</li>
+<li>分类器：knn效果不好，可能需要多分类的SVM。
+</li>
+</ol>
+
+<p>
+参考论文：Visual Caegorization with Bags of Keypoints. G.Csurka,C. R. Dance,L. Fan,J. Willamowski,C. Bray.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">SPM（spatial pyramid matching）</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+SPM算法是建立在词袋模型上的。首先词袋模型由于是整个图片的直方图，因此它丢失了局部的信息，因此SPM是建立金子塔将局部信息也编码进去。这里的金子塔不是降采样的金字塔，而是将图片分割。比如最底层是将图片分割层16份，上一层是分成4份，最上层是整张图片。对每一个小块都求自己块内的直方图，并按一定比例的加权构成一个大的向量作为描述向量。然后就是分类，这里采用的是金字塔匹配的特殊的方法，它是计算一个非线性的核用于SVM分类。这样做的目的是适应金字塔的结构，能得到比较好的结果。
+</p>
+
+<p>
+例如：一张640×480的图片，采用16×16的块求SIFT特征，并且移动的步数是8个像素，一张图片要生成 \(M=(640-8)/8+(480-8)/8)\) 个128维的特征向量。将训练图片得到的所有特征向量用k-means聚类得到dictionary，假设有N个word。描述向量是从金字塔底层到高层，每一层的每一块都生成一个N维的向量，比如一共3层的话，最底层有16块，一共生成16×N长的向量，最后组成 \((16+4+1)*N\) 长的一幅图的描述向量。这样每一幅图都生成这样一个描述向量。之后是计算交叉核用于分类，而测试的图片也要和所有的原图向量计算分类的核。最后使用得到的交叉核来用SVM进行分类。
+</p>
+
+<p>
+参考论文：Beyond Bags of Features:Spatial Pyramid Matching for Recognizing Natural Scene Categories. Svetlana Lazebnik, Cordelia Schmid, Jean Ponce.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">ScSPM（Sparse Coding Spatial Pyramid Matching）</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+ScSPM是对SPM的一种改进，SPM的计算量非常大，因为都要计算交叉核。ScSPM是采用另一种方法编码，可以使用线性核得到很好的结果。
+</p>
+
+<p>
+ScSPM是采用稀疏的编码方式。这和SPM采用的硬编码不一样，它是一种“软”编码，就像它可以通过不同的权重投票一样。因此它也不是采用k-means算法，而是另一个最小化函数（见论文）。接下来是pooling的过程，即将k个N维的软编码向量融合成一个N维的向量。这里采用的是最大值pooling，即向量某一位的值是k个向量对应位的值中最大的。而SPM或词袋模型中是是采用的统计平均值。这样像SPM中一样金字塔的向量拉成一个大的向量就是描述向量，并且采用线性核（论文）进行分类，这样训练和分类的效率非常高。
+<img src="./images/ScSPM.jpg" alt="ScSPM.jpg" />
+</p>
+
+<p>
+参考论文：Linear Spatial Pyramid Matching Using Sparse Coding for Image Classification. Jianchao Yang,Kai Yu,Yihong Gong,Thomas Huang.
+这篇论文的几个公式非常重要，对整个过程讲的也很清楚。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">总结</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+这里是词袋模型发展过程中比较重要的几个工作，从没有局部信息的BoF到采用金子塔并使用金字塔匹配核来实现的SPM，再到ScSPM使用稀疏编码和最大值pooling，并使用线性SVM，整个过程都是围绕直方图展开。只是具体的操作比如如何生成字典，如何匹配等不一样。需要理清整个发展的方向。
+</p>
+<hr  />
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"></p>
+</div>
+</body>
+</html>

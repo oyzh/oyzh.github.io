@@ -1,0 +1,31 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:Spark 学习
+#+OPTIONS: toc:nil
+* 安装Spark
+1. 安装python和java，一般linux都自带有，但是java是openjava，最好安装oracle的java。
+2. 安装Scala。
+3. 解压Spark，配置环境变量。
+4. 添加python路径的环境变量
+* Python开发
+** 导入Spark
+from pyspark import SparkContext,SparkConf
+** 初始化
+
+
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

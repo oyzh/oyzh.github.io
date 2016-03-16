@@ -17,15 +17,95 @@
 2. 安装Scala。
 3. 解压Spark，配置环境变量。
 4. 添加python路径的环境变量
+* Spark基础
+1. 从外部数据创建RDDs
+2. 使用像filter()的变换操作定义新的RDDs
+3. 调用persist()或cache()来缓存会被多次使用的RDDs
+4. 运行count()和first()这样的actions来结束并行计算
+
+概念：lineage graph世系图
+用来计算每一个要求的RDD，同时如果一个RDD丢失可以重新计算。
+
+当使用collect()时，整个数据集必须全部放在内存中，因此在数据集很大时不能使用collect()函数。
+
+不要将RDD想成是特定数据的集合，最好认为每一个RDD是我们通过transformations定义的如何计算数据的指令集合。
+
+Spark采用惰性求值，原因是可以降低数据迁移的次数，因为可以将多次操作一次处理。（厉害啊，因为有世系图，而且RDD中保存着指令，所以action时才真正移动数据并将所有计算一起执行）
+
+persist或cache可以将结果存在内存或硬盘，由于惰性求值，如果一个中间结果经常需要使用，那么不cache的话每次action都会计算，因此可以在第一次计算后将它的结果保存在内存或硬盘中下次可以使用。注意缓存是为了节约计算，而不是为了放入内存做内存计算。
+
+当在一个集群上运行Spark应用时发生的事：
+1. 用户使用spark-submit来提交一个应用。
+2. spark-submit运行驱动程序并调用用户指定的main()方法。
+3. 驱动程序与集群管理者建立联系并请求资源和运行executors。
+4. 集群管理者代表驱动程序来运行executors。
+5. 驱动进程运行用户程序。基于RDDactions和transformations，驱动程序以任务的形式向executors传递work。
+6. 在executor进程上运行任务来计算和存储结果。
+7. 如果驱动的main()方法停止或调用SparkContext.stop()，那么会停止excutors同时从集群中释放资源。
+
+注意在submit时，内存不能超过能用的，否则会出现不能部署的错误。
 * Python开发
 ** 导入Spark
-from pyspark import SparkContext,SparkConf
+   from pyspark import SparkContext,SparkConf
 ** 初始化
+from pyspark import SparkConf, SparkContext
 
+conf = SparkConf().setMaster("local").setAppName("My App")
+sc = SparkContext(conf = conf)
+注意：setMaster告诉Spark如何连接一个集群，local是一个在Spark上的特殊的值，是在本机上运行一个线程，而不链接到一个集群。
+应用名称是如果连接一个集群，在集群管理界面上标识应用的身份。
+** Shuffle(洗牌)操作
+Shuffle是将不同分区的数据来聚集，通常要在不同的机器上复制数据，因此Shuffle操作是一个复杂和代价很大的操作。
 
+为了了解在shuffle阶段发生了什么，我们可以考虑reduceByKey操作的例子。reduceByKey操作产生一个新的RDD，其中每一个键对应的所有值被组成一个tuple——reduce函数只是将某个键的值组成一个tuple。挑战在于单个键不是所有的值都在同一个分区中，甚至不再同意个机器中，但是为了计算结果它们必须被放在一起。
+** 常用API
+flatMap：RDD的一个元素生成多个元素。
+reduceByKey：根据Key来做reduce操作，j也就是说一个Key的所有值来做一个action操作。
+action操作基于RDD计算一个结果，要么是返回给驱动程序，或者将它存储在外部存储系统中。
+** 开发技巧
+np.array([float(x) for x in line.split(' ')])
+rdd.takeSample :这是一个action函数。
+** 其他
+Hbase：建立在HDFS上的分布式数据库。
+不要传递对象中的函数。
+#+END_HTML
+* MLib
+** 回归
+邮件分类，每一封邮件生成一个特征向量。采用hash算法，每一个单词对应的位置加一。比如hash得到的值在某一个范围内，并对应位加一。
+
+函数：
+1. HashingTF -> 可以将字符串hash成数字。
+2. LogisticRegressionWithSGD的train方法，生成模型。
+
+类：
+LabeledPoint -> 标记后的向量的类
+
+稀疏向量 SpareVector，可能有很多为零时。
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>
 <br>
 <a href="http://github.com/oyzh">Github</a>
-#+END_HTML
+** 数据类型
+Vector：dense vector和sparse vector，其中稀疏向量只存储非零点。
+
+LabeledPoint：包括一个vector和一个label（浮点数）
+
+Rating：A rating of a product by a user, used in the mllib.recommendation package for product recommendation.
+
+Various Model classes：每一个模型是一个训练算法的结果，通常有一个predict()函数来将model应用在一个新的数据点上或者用在一个RDD。
+
+大多数算法直接在RDDs、Vectors、LabeledPoint或者Ratings。
+** 向量
+from numpy import array
+
+from pyspark.mllib.linalg import Vectors
+
+denseVec1 = array([1.0,2.0,3.0])
+
+denseVec2 = Vectors.dense([1.0,2.0,3.0])
+
+构造稀疏数组的两种方法，可以用字典或者两个分别表示位置和值的列表。
+
+** 特征提取
+mllib.feature包中包含有多个类，包括从text或其他地方构建特征向量的算法，还有归一化和变换特征尺度。

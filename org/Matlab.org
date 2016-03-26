@@ -10,12 +10,12 @@
 #+OPTIONS: timestamp:nil
 #+OPTIONS: num:nil
 -----
-#+TITLE:Spark 学习
+#+TITLE:使用Matlab遇到的问题和一些技巧
+#+TOC: headlines 2
 #+OPTIONS: toc:nil
-* 安装Spark
-1. 安装python和java，一般linux都自带有，但是java是openjava，最好安装oracle的java。
-2. 安装Scala。
-
+* libstdc++错误
+/opt/MATLAB/R2012a/sys/os/glnxa64/libstdc++.so.6: version `GLIBCXX` \
+错误原因是编译c++文件时使用了更新的g++编译器(g++4.9)，这个编译器需要链接新的动态链接库，而在matlab的安装里面自带的libstdc++.so.6版本过低,所以需要将matlab文件夹下的libstdc++链接到系统中更新的libstdc++库。
 -----
 #+BEGIN_HTML
 <a href="http://oyzh.github.io">Back to Homepage</a>

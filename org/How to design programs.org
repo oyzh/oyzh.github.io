@@ -1,0 +1,59 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:
+#+TOC: headlines 2
+#+OPTIONS: toc:nil
+* 设计程序
+1.理解程序的目的
+程序设计的目标是创建一个接收输入并产生结果的机制。因此在开发程序时应该给每一个程序一个有意义的名字,并且说明输入数据和所产生的数据的类型,这称为程序的合约。
+
+一旦有了合约,就可以在程序中加入函数头部, 函数头部复述了程序的名字,同时给每个输入一个不同的名字,它们是(代数)变量,是程序的参数 。
+
+最后,基于合约和参数,简要阐明一下程序的用途,它是程序要完成的任务的简短注释。对于大多数程序,一到两行就足够了,更大的程序则需要更多的信息来说明其目的。
+
+;; area-of-ring : number number -> number \
+;; 计算一个半径为 outer,洞的半径为 inner 的环的面积 \
+(define (area-of-ring outer inner) ...)\
+2.例子
+为了更好地了解程序要计算什么,需要构造一些输入并确定输出到底为何。\
+;; area-of-ring : number number -> number \
+;; 计算一个半径为 outer,洞半径为 inner 的环的面积 \
+;; 例子: (area-of-ring 5 3) 的结果为 50.24 \ 
+(define (area-of-ring outer inner) ...) \
+3.程序体
+最后必须阐明程序体,即,必须将函数头部中的“...”替换为表达式。\
+4.测试
+在完成了程序定义之后,还必须测试程序,至少应该确定对于给定的例子,程序计算所得的结果与\
+预期数值是否相符。为了简化程序测试过程,通常可以在定义窗口的下面如同添加等式一样添加一些例子。\
+然后,按下执行按钮,计算它们,观察对于这些例子程序是否正常。\
+
+例子：
+
+;; 合约: area-of-ring : number number -> number \
+;; 用途说明: 计算一个半径为 outer,其中洞的半径为 inner 的环的面积 \
+;; 例子: (area-of-ring 5 3) 的计算结果为 50.24 \
+;; 定义: [函数头部的精化] \
+(define (area-of-ring outer inner) \
+(- (area-of-disk outer) \
+(area-of-disk inner))) \
+;; 测试: \
+(area-of-ring 5 3) \
+;; 预期的值 \
+50.24 \
+
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

@@ -13,6 +13,22 @@
 #+TITLE:计算机视觉
 #+OPTIONS: toc:nil
 根据李飞飞的视觉课参考的相应章节
+* 分段
+One way to think about "segmentation" is Clustering.
+
+Clustering: group together similar points and represent them with a single token.
+
+Key Challenges:
+1. What makes two points/images/patches similar?
+2. How do we compute an overall grouping from pairwise similarities?
+
++ Agglomerative clustering\
+Start with each point as its own cluster and iteratively merge the closest clusters.
++ K-means\
+Iteratively re-assign points to the nearest cluster center.
++ Mean-shift clustering\
+Estimate modes of pdf
+
 * DONE F&P ch7 线性滤波
 ** 移不变线性系统
 卷积表示了一大类系统的性质。特别的，大多数图像系统可以高度近似成具有以下三个重要性质：

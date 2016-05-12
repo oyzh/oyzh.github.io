@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>基于能量的模型</title>
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="/css/style.css">
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+            config: ["MMLorHTML.js"], jax: ["input/TeX"],
+        //  jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "0em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">基于能量的模型</h1>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+<hr  />
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">基于能量的函数</a></li>
+<li><a href="#sec-2">ISING模型</a></li>
+<li><a href="#sec-3">BM和RBM</a></li>
+<li><a href="#sec-4">使用模型</a></li>
+<li><a href="#sec-5">采样</a></li>
+<li><a href="#sec-6">概率图模型、马尔科夫链和隐马尔科夫模型</a></li>
+<li><a href="#sec-7">MCMC</a></li>
+</ul>
+</div>
+</div>
+<p>
+由于DNN（深度信念网）是由RBM（限制波耳兹曼机）层次连接而成，RBM是一种基于能量的网络模型，这种模型对于有监督和无监督学习都非常有用，而这里面涉及了很多方面的知识，这里记录一下对这些概念的理解和以后需要了解的知识。
+</p>
+
+<p>
+关键词：基于能量模型，ISING模型，BM（波尔兹曼机），RBM（限制波尔兹曼机），图模型，概率密度估计，MRC，MCMC，Gibbs sampling。
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">基于能量的函数</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+对于所有变量的任意组合状态赋予一个值，将这个值成为能量。对比物理中，假设任意一个分子（或者小磁针）正处于某个状态，则此刻所有分子有一个总的能量。这样一个赋值的函数即基于能量的模型。假设X为状态集合，模型参数为W，则能量为 \(f(W,X)\) 。可以看到，对于基于能量模型，我们主要要考虑的有：
+</p>
+<ol class="org-ol">
+<li>如何定义能量函数。
+</li>
+<li>如何通过实例学习，包括loss function和learning method。
+</li>
+<li>如何通过学习的模型来解决分类、回归等问题。
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">ISING模型</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+可以毫不夸张地说，Ising模型是统计物理中迄今为止唯一的一个同时具备:表述简单、内涵丰富、应用广泛这三种优点的模型。Ising模型的提出是为了解释铁磁物质的相变，即磁铁在加热到一定临界温度以上会出现磁性消失的现象，而降温到临界温度以下又会表现出磁性。这种有磁性、无磁性两相之间的转变，是一种连续相变（也叫二级相变）。Ising模型假设铁磁物质是由一堆规则排列的小磁针构成，每个磁针只有上下两个方向（自旋）。相邻的小磁针之间通过能量约束发生相互作用，同时又会由于环境热噪声的干扰而发生磁性的随机转变（上变为下或反之）。涨落的大小由关键的温度参数决定，温度越高，随机涨落干扰越强，小磁针越容易发生无序而剧烈地状态转变，从而让上下两个方向的磁性相互抵消，整个系统消失磁性，如果温度很低，则小磁针相对宁静，系统处于能量约束高的状态,大量的小磁针方向一致,铁磁系统展现出磁性。而当系统处于临界温度 \(T_C\) 的时候，Ising模型表现出一系列幂律行为和自相似现象。 
+</p>
+
+<p>
+参考：<a href="http://wiki.swarma.net/index.php/ISING%E6%A8%A1%E5%9E%8B">http://wiki.swarma.net/index.php/ISING%E6%A8%A1%E5%9E%8B</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">BM和RBM</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+波尔兹曼机是全连接图的一种能量模型，但要学习它的参数 \(W\) 非常复杂。因此Hinton提出了RBM，RBM是一个二部图结构的模型，因此可以简化学习。同时可以证明RBM的功能也是非常强大，可以收敛到任意的离散密度函数。它们都有一个隐层，因为可能有一些内在结构没有发现，比如一幅图片的所有像素是vision变量，而图片的类别是隐变量。因此新的能量函数为 \(f(W,X,Y)\) 。对于训练，我们利用波尔兹曼分布表示某一状态的概率，对于vision变量求边缘分布，采用最大化似然函数（相当于最小化训练集能量）作为loss function。最后采用梯度下降来训练参数，在估计梯度时要用到Gibbs采样。
+</p>
+
+<p>
+RBM是一种MRF，即一种无向图概率模型，具有马尔科夫性质。可以将RBM本质上是概率图模型，只是刚好有其他比较好的性质，比如当可视层和隐层都取值范围是 \({0,1}\) 时，可以将RBM看成一般的前向传播网络，这时 \(sigmoid(W_ix+b_i)\) 得到的值就是 \(p(H_i = 1|X=x)\) 。一般来说这个概率是通过先算能量，再算概率，但是由于这个模型的良好定义，使得激活值刚好为概率。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">使用模型</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+假设输入X，要预测Y，需要得到使能量最小的Y作为标签。当然回归等。而求这样的Y比较麻烦，所以有很多其他方法。
+</p>
+
+<p>
+可以把RBM当作生成模型，即RBM本身是描述概率密度，每一个状态定义了一个概率。因此可以采用Gibbs采样来得到这个模型的抽样。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">采样</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+在这里一共有两个地方用到采样。一是在训练过程中估计梯度的时候。二是得到模型后，我们知道这个模型是对训练数据的一个概率密度估计，因此如果能将它作为生成模型将会非常有用。这样也可以判断模型生成的数据是否是需要的分布。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">概率图模型、马尔科夫链和隐马尔科夫模型</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+这里是自己的目前的一些理解，可能有错误。
+</p>
+
+<p>
+MRF或贝叶斯网络都是特殊的概率图模型。概率图中每个节点是一个随机变量，边描述了随机变量之间的依赖关系。经常还有马尔科夫链中的状态转换图，这指的是一个随机变量的取值空间，而转换矩阵指的是前一个取值状态对当前的影响。整个马尔科夫链可以看作是一个概率图，每个节点作为随机变量可以取的值就是状态空间中的值，随机变量之间的依赖关系由状态转移图或状态转移矩阵来描述。比如对于一个连续十次的随机过程，这十次的联合分布可以枚举出来，而每一个确定状态的概率也可以根据概率转换图计算出来。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">MCMC</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Monto Carlo采样指的是已知概率密度生成样本。MCMC是利用马尔科夫性质来进行Monto Carlo采样，Gibbs采样是MCMC中的一种。
+</p>
+<hr  />
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="validation"></p>
+</div>
+</body>
+</html>

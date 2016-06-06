@@ -1,0 +1,56 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:自己总结的deep learning
+#+OPTIONS: toc:nil
+* 感知机
+
+神经网络
+认知机
+前向传播算法
+RBM
+LeNet卷积神经网络
+手写字符识别
+DBN贪婪训练
+AlexNet
+VGG
+GoogLeNet
+深度残差网络
+
+* 冲量
+对一般的梯度下降的权值更新的修改是增加冲量项：
+$$\Delta w_{ji}(n)=\eta \delta_jx_{ji}+\alpha \Delta w_{ji}(n-1)$$
+直观上的解释是在使用梯度下降时，当误差函数曲面有一个狭长的山谷时，梯度的方向几乎垂直于长轴，结果是权值在短轴间来回震荡，而在长轴上非常缓慢的移动。动量项有助于平均短轴上的震荡，同时加快在长轴上的移动。
+
+* Loss function
+loss function是评价当前系统的效果的度量，通常加一个正则项。我们的目的就是最小化loss function，loss function中包含了所有的参数，因此整个任务就变成了求loss function的梯度。有不同的loss function选择，通常设计loss function有以下几个原则：
+1. loss function始终为正，因此目标是最小化loss function
+2. loss function容易求导
+3. 越接近正确label，loss function的值越小
+在用sigmoid做最后一层的激活函数，label一般标记为输出向量的某一个为1,其他为0,最常用的loss function是欧式度量：
+$$\frac{1}{2} \sum_{i=1}^{N} \parallel (o_i-y_i) \parallel^2$$
+其中 $o_i$ 为网络输出， $y_i$ 为label对应值，注意都是向量。
+
+上面式子的缺点是梯度太小，因此现在一般用交叉熵代替：
+$$-\sum_{i=1}^{N}\{y_i\ln{a_i}-(1-y_i)\ln(1-a_i)\}$$
+可以通过直观得到解释，也可以根据信息论解释。
+
+对于sofmax层，也是希望每一类对应的值尽量大，因此它对应的概率要大，一般用negtive log来表示，首先因为归一化所以每一个值都在0到1,因此log之后的值为负，取负后为正，满足第一条，而是越靠近1,也就是越接近正确值越好，而log越靠近1越小，因此满足2和3,因此可以作为loss function。它的形式是：
+$$-\sum_{i=1}^{N}{\log p_i}$$
+其中 $p_i$ 是softmax中的定义：
+$$p_i = \frac{e^{s_{y_i}}}{\sum_j e^{s_j}}$$
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

@@ -1,0 +1,23 @@
+---
+layout: post
+title: Debian输入法安装
+excerpt: Debian输入法安装方法
+---
+<ol class="org-ol">
+<li>locale设置，加入中文。
+</li>
+<li>找到region&amp;language，在Input Sources中加入中文支持。
+</li>
+<li>安装fcitx（默认已安装）及输入法：fcitx-table-wbpy，fcitx-sunpinyin。
+</li>
+<li>新建/etc/X11/Xsession.d/95xinput，并输入：
+</li>
+</ol>
+<div class="org-src-container">
+
+<pre class="src src--w">export LANG="en_US.utf-8"
+export LC_CTYPE="zh_CN.utf-8"
+export XMODIFIERS="@im=fcitx"
+fcitx&amp;
+</pre>
+</div>

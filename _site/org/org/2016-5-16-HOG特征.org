@@ -1,0 +1,19 @@
+#+BEGIN_HTML
+---
+layout: post
+title: HOG特征原理
+excerpt: HOG特征原理与实现
+---
+#+END_HTML
+#+OPTIONS: toc:nil
+#+OPTIONS: ^:{}
+* 原理
+局部对象的appearance和shape可以通过局部梯度强度或边缘方向来描述，即使不知道相应的梯度或边缘位置的精确知识。
+* 实现
+RGB colour space with no gamma correction; [−1, 0, 1] gradient filter with no smoothing; linear gradient voting into 9 orientation bins in 0◦–180◦; 16×16 pixel blocks of four 8×8 pixel cells; Gaussian spatial window with σ = 8 pixel; L2-Hys (Lowe-style clipped L2 norm) block normalization; block spacing stride of 8 pixels (hence 4-fold coverage of each cell); 64×128 detection window; linear SVM classifier.
+* 理解
+1. HOG特征是一张图片生成一个特征向量，而不像SIFT是一个特征点生成一个特征向量。因此训练图片需要是一样大，比如论文中的64×128。这样生成的向量才一样长。在准备训练数据时，需要先将行人的框出来，再将图片resize成一样大小。
+2. 在对一张图片进行行人检测时，由于不知道行人的大小，所以需要大小改变的滑动窗口来检测，每一张截取出来的图片需要resize成64×128（或者根据训练是的大小改变），以生成和训练时一样长的向量。
+3. 用训练得到的分类器来分类新的向量。
+4. 对图片的全局的描述是有效的需要一个前提就是图片中物体是突出的，或者说是主体，这样得到的向量才有意义，因此才会使用手工来截取行人的图片。
+

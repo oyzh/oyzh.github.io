@@ -1,0 +1,636 @@
+#+BEGIN_HTML
+---
+layout: post
+title: TensorFlow源码分析
+excerpt: 大致分析了TensorFlow执行流程,选取阅读了重要源码
+---
+#+END_HTML
+#+OPTIONS: toc:nil
+#+OPTIONS: num:nil
+#+OPTIONS: ^:{}
+* 代码关系
+  TensorFlow底层采用Eigen库来完成真正的计算，因此Tensor
+  中保存有Eigen的数据结构。Operation是对Tensor的操作，比如
+  Tensor的矩阵乘法。Graph是构建计算图，它包含了节点和边，分别
+  表示了操作和依赖。Session用来构建执行图的环境，因此Session有一个
+  create方法的传入参数是图的定义。真正的执行是在Excutor中，Session在
+  配置好环境后会调用Excutor来执行计算图。
+* Tensor
+  Tensor类是TensorFlow中保存数据的方式，Tensor类中提供的
+  公共的接口主要是不同的构造函数，还有就是得到内部信息的
+  对外接口。
+  + tensor.h
+    定义了Tensor类和TensorBuffer类，TensorBuffer类是保存
+    Tensor数据buffer。
+    #+BEGIN_SRC
+class Tensor {
+  Tensor();
+  Tensor(DataType type, const TensorShape& shape);
+  ... // 其他不同的构造函数。
+ private:
+  ...
+  TensorShape shape_; // 保存Tensor的Shape
+  TensorBuffer* buf_; // TensorBuffer是一个重要的类，buf_是tensor内部真正保存的数据。
+  ...
+}
+    #+END_SRC
+    TensorBuffer保存这数据。
+    #+BEGIN_SRC
+class TensorBuffer : public core::RefCounted {
+  virtual void* data() const = 0;  // 虚函数，需要继承实现
+  virtual size_t size() const = 0;
+}
+    #+END_SRC
+  + tensor.cc
+    由于tensor可以保存不同的数据类型，因此buffer使用了很多模板编程。
+
+    从Tensor的构造函数可以分析它是如何初始化数据的：
+    #+BEGIN_SRC
+Tensor::Tensor(Allocator* a, DataType type, const TensorShape& shape)
+    : shape_(shape), buf_(nullptr) {
+  set_dtype(type);
+  CHECK_NOTNULL(a);
+  if (shape_.num_elements() > 0 || a->ShouldAllocateEmptyTensors()) {
+// 这里构造函数初始化了buf_指针，但是并不是用的TensorBuffer类，而是它的子类Buffer，
+// 说明这个类是可以从申请内存存储数据
+    CASES(type, buf_ = new Buffer<T>(a, shape.num_elements()));
+  }
+  if (buf_ != nullptr && buf_->data() != nullptr && LogMemory::IsEnabled()) {
+    LogMemory::RecordTensorAllocation("Unknown", LogMemory::UNKNOWN_STEP_ID,
+                                      *this);
+  }
+}
+    #+END_SRC
+
+    Buffer的定义如下：
+    #+BEGIN_SRC
+template <typename T>
+class Buffer : public BufferBase {
+ public:
+  Buffer(Allocator* a, int64 n);
+  Buffer(Allocator* a, int64 n, const AllocationAttributes& allocation_attr);
+ private:
+  T* data_;
+};
+    #+END_SRC
+    这里对这个类定义有省略，但是主要可以看到这是一个模板，根据不同类型
+    来定义类，同时它继承自BufferBase，而BufferBase继承自TensorBuffer。
+    从Buffer的构造函数可以知道他是如何构造的。
+    #+BEGIN_SRC
+// 因为Buffer本身是模板，所以它的方法也要是模板
+template <typename T>
+Buffer<T>::Buffer(Allocator* a, int64 n)
+// 这里将data_初始化为a->Allocate<T>(n),说明a的这个方法可以申请大小为n的内存，
+// 并返回指针，这样就找到了Tensor数据初始化的方法。
+    : BufferBase(a), data_(a->Allocate<T>(n)), elem_(n) {}
+    #+END_SRC
+* Operation
+  Operation里定义了各种操作,我们可以从一个实例中研究如何进行真实的计算.
+
+  matmul_op.h和matmul.cc里定义的是如何计算两个Tensor(必须是向量或矩阵)的矩阵乘法.
+
+  + matmul_op.h
+    定义了
+  + matmul_op.cc
+    首先MatMulOp类继承自OpKernel类,在这个类厘米那定义了一个Compute方法,它的参数是OpKernelContext对象,里面有
+    需要计算的各种参数.
+    #+BEGIN_SRC
+class MatMulOp : public OpKernel {
+  ...
+  void Compute(OpKernelContext* ctx) override {
+    const Tensor& a = ctx->input(0); //ctx中保存着输入Tensor
+    const Tensor& b = ctx->input(1);
+    ...
+    // 启动矩阵乘法, LaunchMatMul是一个模板类,里面有launch方法,是真正的计算.
+    LaunchMatMul<Device, T, USE_CUBLAS>::launch(ctx, this, a, b, dim_pair, out);
+  }
+}
+    #+END_SRC
+
+    LauchMatMul有两个模板,分别是关于CPU和GPU的,并且里面只有一个静态方法,可以直接调用.这里看一下GPU版本.
+    #+BEGIN_SRC
+template <typename T>
+struct LaunchMatMul<GPUDevice, T, true /* USE_CUBLAS */> {
+   // launch是一个静态方法
+  static void launch(
+      OpKernelContext* ctx, OpKernel* kernel, const Tensor& a, const Tensor& b,
+      const Eigen::array<Eigen::IndexPair<Eigen::DenseIndex>, 1>& dim_pair,
+      Tensor* out) {
+      ...
+      // 在设备上分配内存,返回指针
+      auto a_ptr = AsDeviceMemory(a.template flat<T>().data());
+      auto b_ptr = AsDeviceMemory(b.template flat<T>().data());
+      auto c_ptr = AsDeviceMemory(out->template flat<T>().data());
+
+      // 用ThenBlasGemm执行计算
+      // Cublas does
+      // C = A x B
+      // where A, B and C are assumed to be in column major.
+      // We want the output to be in row-major, so we can compute
+      // C' = B' x A' (' stands for transpose)
+      bool blas_launch_status =
+          stream->ThenBlasGemm(blas_transpose_b, blas_transpose_a, n, m, k, 1.0f,
+                               b_ptr, transpose_b ? k : n, a_ptr,
+                               transpose_a ? m : k, 0.0f, &c_ptr, n)
+              .ok();
+      ...
+    #+END_SRC
+* Graph
+  Graph主要是描述计算图,代码位置在/tensorflow/tensorflow/core/graph里面.
+  + graph.h
+   graph.h定义了Edge,Node,Graph等类,是计算图的基础.
+   + class Node
+     在Node的public中定义了很多Node属性的公共读取接口,比如得到Node的id的方法. *注意* ,private的变量后面都有一个下划线.
+     在private中定义了几个重要的变量,一是props_,定义了各种属性,每个Node对象有个id_,每个节点有入边和出边集合,主要几个属性如下:
+     #+BEGIN_SRC
+class Node{
+     ...
+     int id_;         //每一个Node对应一个id
+     int cost_id_;    //
+     NodeClass class_;// NodeClass是定义在Node里的一个枚举量,表明Node的类型
+
+     EdgeSet in_edges_; //EdgeSet是边的集合的类,因为入边可能有多个,所以需要用边的集合表示
+     EdgeSet out_deges_; //同上,出边的集合
+
+     Properties* props_; //也是定义在Node里面的一个类,存储一些属性
+
+     string assigned_device_name_; Name of device assigned to perform this computation
+     ...
+}
+     #+END_SRC
+   + class Edge
+     在Edge中也是有一些公开的方法得到一些边的属性,私有变量主要如下:
+     #+BEGIN_SRC
+class Edge{
+     ...
+     Node* src_; //边有一个源节点
+     Node* dst_; //边有一个出节点
+     int id_; //每个边也有一个id
+     int src_output_; //the number of the source output that produces the data carried by this edge.  The special value kControlSlot is used for control dependencies.
+     int dst_input_; //the number of the destination input that consumes the data carried by this edge.  The special value kControlSlot is used for control dependencies.
+     ...
+}
+     #+END_SRC
+   + class Graph
+     图的类,这里要介绍一些方法,先介绍一下如何新建一个图对象,然后如何构造一个图.
+     1. 实例化Graph对象时,传递一个OpRegistryInterface对象给构造函数,这个对象包含了所有的注册了的Op,使得Graph可以从这里面查找要增加的Op.
+     2. 引用Graph中的各种增加Node和增加Edge的方法来一步一步构造图.
+     所以可以将Graph方法分为两类,一是初始化,而是构造图.
+     #+BEGIN_SRC
+class Graph{
+  // Constructs a graph with a single SOURCE (always id kSourceId) and a
+  // single SINK (always id kSinkId) node, and an edge from SOURCE->SINK.
+  // The graph can hold ops found in registry.
+     explict Graph(const OpRegistryInterface* registry); //可以从registry中找到所有的Op定义
+
+     Node* AddNode(const NodeDef& node_fde, Status* status); //添加一个node给这个图,并返回节点
+     Node* CopyNode(Node* node); // Copies *node, which may belong to another graph, to a new node, which is returned.  Does not copy any edges.
+     void RemoveNode(Node* node); // Remove a node from this graph, including all edges from or to it.
+
+     const Edge* AddEdge(Node* source, intx, Node* dest, int y); // Add an edge that connects the xth output of "source" to the yth input of "dest".
+     // Add a control-edge (no data flows along this edge) that connects "source" to "dest".
+     const Edge* AddControlEdge(Node* source, Node* dest){
+          return AddEdge(source, kControlslot, dest, kControlslot);
+     }
+     void RemoveEdge(const Edge* edge); // Removes edge from the graph.
+     ...
+}
+     #+END_SRC
+     上面主要是构造图的方法,还有其他一些 方法没有介绍.
+
+     私有变量里保存着图的结构:
+     #+BEGIN_SRC
+class Graph{
+     ...
+     const OpRegistryInterface* const ops_; // 通过构造函数初始化,找到所有Op定义
+     std::vector<Node*> nodes_; // 用vector来保存所有的节点
+     std::vector<Edge*> edges_; // 用vector来保存所有的边
+     EdgeSet edge_set_; // 保存所有边集合
+     ...
+}
+     #+END_SRC
+     还有其他的变量这里没有介绍.
+
+   以上大致介绍了TensorFlow中图的表示.包括私有变量和公共接口.
+  + graph.cc
+   graph.cc实现了graph.h中类中的方法.这里介绍几个比较重要的方法.
+   + AddNode
+     #+BEGIN_SRC
+Node* Graph::AddNode(const NodeDef& node_def, Status* status) {
+  const OpDef* op_def;
+  // ops_是Graph类的一个私有变量,有一个LookUpOpDef的方法可以操作某个操作,并赋值给op_def,
+  // node_def中有一个op()方法可以得到这个节点使用的op. TODO: Status
+  status->Update(ops_->LookUpOpDef(node_def.op(), &op_def));
+  if (!status->ok()) return nullptr;
+
+  DataTypeVector inputs;
+  DataTypeVector outputs;
+  status->Update(InOutTypesForNode(node_def, *op_def, &inputs, &outputs));
+  if (!status->ok()) {
+    *status = AttachDef(*status, node_def);
+    return nullptr;
+  }
+  // 如果检查合格,就可以新建一个Node,并返回这个节点.
+  Node* node = AllocateNode(
+      new Node::Properties(op_def, node_def, inputs, outputs), nullptr);
+  return node;
+}
+#+END_SRC
+   + AllocateNode
+     上面的AddNode函数中使用了这个Graph中定义的函数
+     #+BEGIN_SRC
+Node* Graph::AllocateNode(Node::Properties* props, const Node* cost_node) {
+  Node* node = nullptr;
+  if (free_nodes_.empty()) {
+    node = new (arena_.Alloc(sizeof(Node))) Node;  // placement new
+  } else {
+    node = free_nodes_.back();
+    free_nodes_.pop_back();
+  }
+  const int id = nodes_.size(); // node的id是按顺序赋值的
+  int cost_id = cost_node ? cost_node->cost_id() : id;
+  node->Initialize(id, cost_id, props);
+  nodes_.push_back(node); // 将新建的node加入到Graph的nodes_中
+  ++num_nodes_; // Graph中的node数量加一
+  return node;
+}
+#+END_SRC
+   + ...
+* Session
+  Session是执行图的类，在/tensorflow/tensorflow/core/public中的session.h定义了Session类，在/tensorflow/tensorflow/core/common_runtime里面的session.cc是类方法实现，但是它里面都是虚函数，
+  所以还要有子类来继承。所以主要的代码是direct_session.h和direct_session.cc。
+  + direct_session.h
+   DirectSession继承自Session。
+   #+BEGIN_SRC
+class DirectSession : public Session {
+    ...
+  ::tensorflow::Status Run(const NamedTensorList& inputs,
+                           const std::vector<string>& output_names,
+                           const std::vector<string>& target_nodes,
+                           std::vector<Tensor>* outputs) override;
+
+  // NOTE: Experimental and subject to change.
+  ::tensorflow::Status Run(const ::tensorflow::RunOptions& run_options,
+                           const NamedTensorList& inputs,
+                           const std::vector<string>& output_names,
+                           const std::vector<string>& target_nodes,
+                           std::vector<Tensor>* outputs,
+                           RunMetadata* run_metadata) override;
+   ...
+   #+END_SRC
+  + direct_session.cc
+   这个文件中是session的真正的实现。两个Run最后都定位到后一个Run。
+#+BEGIN_SRC
+Status DirectSession::Run(const RunOptions& run_options,
+                          const NamedTensorList& inputs,
+                          const std::vector<string>& output_names,
+                          const std::vector<string>& target_nodes,
+                          std::vector<Tensor>* outputs,
+                          RunMetadata* run_metadata) {
+  direct_session_runs->GetCell()->IncrementBy(1);
+  {
+    mutex_lock l(graph_def_lock_);
+    if (!graph_created_) {
+      return errors::InvalidArgument(
+          "Session was not created with a graph before Run()!");
+    }
+  }
+
+  // Extract the inputs names for this run of the session.
+  std::vector<string> input_tensor_names;
+  input_tensor_names.reserve(inputs.size());
+  for (const auto& it : inputs) {
+    input_tensor_names.push_back(it.first);
+  }
+
+  if (run_options.inter_op_thread_pool() < 0 ||
+      run_options.inter_op_thread_pool() >= thread_pools_.size()) {
+    return errors::InvalidArgument("Invalid inter_op_thread_pool: ",
+                                   run_options.inter_op_thread_pool());
+  }
+  thread::ThreadPool* pool = thread_pools_[run_options.inter_op_thread_pool()];
+
+  // Check if we already have an executor for these arguments.
+  ExecutorsAndKeys* executors_and_keys;
+  RunStateArgs run_state_args;
+
+  // EXPERIMENTAL: Options that allow the client to insert nodes into partition
+  // graphs for debugging.
+  if (!run_options.debug_tensor_watch_opts().empty()) {
+    run_state_args.debug_tensor_watches = run_options.debug_tensor_watch_opts();
+  }
+
+  TF_RETURN_IF_ERROR(
+      GetOrCreateExecutors(pool, input_tensor_names, output_names, target_nodes,
+                           &executors_and_keys, &run_state_args));
+
+  // Create a run state and start execution.
+  RunState run_state(input_tensor_names, output_names);
+  run_state.rendez = new IntraProcessRendezvous(device_mgr_.get());
+
+  // Send inputs.
+  TF_RETURN_IF_ERROR(SendInputs(inputs, executors_and_keys, run_state.rendez));
+
+  // Start parallel Executors.
+  const int num_executors = executors_and_keys->items.size();
+  ExecutorBarrier* barrier = new ExecutorBarrier(
+      num_executors, run_state.rendez, [&run_state](const Status& ret) {
+        {
+          mutex_lock l(run_state.mu_);
+          run_state.status.Update(ret);
+        }
+        run_state.executors_done.Notify();
+      });
+
+  Executor::Args args;
+  args.step_id = step_id_counter_.fetch_add(1);
+  args.rendezvous = run_state.rendez;
+  args.cancellation_manager = cancellation_manager_;
+  args.runner = [this, pool](Executor::Args::Closure c) {
+    SchedClosure(pool, c);
+  };
+  args.session_state = &session_state_;
+  args.tensor_store = &run_state.tensor_store;
+  args.step_resource_manager = &run_state.step_resource_manager;
+  if (LogMemory::IsEnabled()) {
+    LogMemory::RecordStep(args.step_id, run_state_args.handle);
+  }
+
+  const bool do_trace = (run_options.trace_level() > RunOptions::NO_TRACE);
+  const int64 build_cost_model =
+      options_.config.graph_options().build_cost_model();
+  if (do_trace || build_cost_model > 0) {
+    run_state.collector.reset(new StepStatsCollector(
+        run_metadata->mutable_step_stats(),
+        (build_cost_model > 0) ? &cost_model_manager_ : nullptr));
+    args.stats_collector = run_state.collector.get();
+  }
+
+  // TODO(pbar) CostModel still gets very confused when presented
+  // with trace data from the GPUTracer. This will need fixing if the
+  // cost model needs meaningful GPU timing information.
+  std::unique_ptr<GPUTracer> tracer;
+  if (!build_cost_model &&
+      run_options.trace_level() >= RunOptions::HARDWARE_TRACE) {
+    tracer.reset(CreateGPUTracer());
+    // tracer will be NULL on non-GPU platforms.
+    if (tracer) tracer->Start();
+  }
+
+  for (const auto& item : executors_and_keys->items) {
+    item.executor->RunAsync(args, barrier->Get()); // 这一步就是调用excutor的RunAsync方法，这就是真正的执行
+  }
+
+  WaitForNotification(&run_state, run_options.timeout_in_ms() > 0
+                                      ? run_options.timeout_in_ms()
+                                      : operation_timeout_in_ms_);
+
+  if (tracer) {
+    tracer->Stop();
+    tracer->Collect(args.stats_collector);
+  }
+
+  {
+    mutex_lock l(run_state.mu_);
+    TF_RETURN_IF_ERROR(run_state.status);
+  }
+
+  // Receive outputs.
+  TF_RETURN_IF_ERROR(
+      RecvOutputs(output_names, executors_and_keys, &run_state, outputs));
+
+  // Save the output tensors of this run we choose to keep.
+  TF_RETURN_IF_ERROR(
+      run_state.tensor_store.SaveTensors(output_names, &session_state_));
+
+  // Build and return the cost model as instructed.
+  mutex_lock l(executor_lock_);
+  ++executors_and_keys->step_count;
+  if (executors_and_keys->step_count == build_cost_model) {
+    CostGraphDef* cost_graph = run_metadata->mutable_cost_graph();
+    for (const auto& item : executors_and_keys->items) {
+      TF_RETURN_IF_ERROR(
+          cost_model_manager_.AddToCostGraphDef(item.graph, cost_graph));
+    }
+  }
+
+  // If requested via RunOptions, output the partition graphs.
+  if (run_options.output_partition_graphs()) {
+    protobuf::RepeatedPtrField<GraphDef>* parition_graph_defs =
+        run_metadata->mutable_partition_graphs();
+    for (const PerPartitionExecutorsAndLib& exec_and_lib :
+         executors_and_keys->items) {
+      GraphDef* partition_graph_def = parition_graph_defs->Add();
+      exec_and_lib.graph->ToGraphDef(partition_graph_def);
+    }
+  }
+
+  return Status::OK();
+}
+#+END_SRC
+* Executor
+  Executor是运行一个计算图。
+  + executor.h
+    定义class Executor，这个里面主要定义了运行参数，是定义在类里的一个struct：Arg。然后定义了同步和异步的Run方法。
+    #+BEGIN_SRC
+class Executor{
+   struct Args {
+     ...
+    } //定义的参数
+   virtual void RunAsync(const Args& args, DoneCallback done) = 0;
+
+   // Synchronous wrapper for RunAsync().
+   Status Run(const Args& args) {
+    Status ret;
+    Notification n;
+    RunAsync(args, [&ret, &n](const Status& s) {
+      ret = s;
+      n.Notify();
+    });
+    n.WaitForNotification(); // wait是不是用来同步的？
+    return ret;
+  }
+ };
+
+}
+    #+END_SRC
+  + executor.cc
+      Executor的实现。
+
+* 参考资料
+
+  [[http://www.cnblogs.com/yao62995/p/5773578.html]]
+
+  [[http://www.jorditorres.org/first-contact-with-tensorflow/]]
+
+  [[http://learningtensorflow.com/]]
+
+  [[http://blog.csdn.net/sydpz1987/article/details/51520068]]
+
+  [[http://cering.github.io/2015/12/08/%E4%BD%BF%E7%94%A8SWIG%E5%AE%9E%E7%8E%B0Python%E8%B0%83%E7%94%A8C-C-%E4%BB%A3%E7%A0%81/][使用SWIG实现Python调用C和C++代码]]
+
+  [[http://eigen.tuxfamily.org/index.php?title=Main_Page][C++矩阵计算工具Eigen]]
+
+* C++学习
+** 变量和基本类型
+   1. 引用
+      *引用* 为对象起了另外一个名字,引用类型引用另一种类型.通常将声明符携程&d的形式来定义应用类型,其中d是声明的变量名.
+   一般在初始化变量时,初始值会被拷贝到新建的对象中.然而定义引用时,程序把引用和它的初始值 *绑定* 在一起,而不是将初始值拷贝给引用.
+   一旦初始化完成,引用将和它的初始值对象一起绑定在一起.因为无法令引用重新绑定到另外一个对象,因此引用必须初始化.
+#+BEGIN_QUOTE
+   引用即别名: 引用并非对象,相反的,它只是为一个已经存在的对象所起的另外一个名字.
+   #+END_QUOTE
+   2. const
+      有时我们希望定义这样一种变量,它的值不能被改变.正如之前反复提到的,对象的类型决定了其上的操作.与非const类型所能参与的操作相比,
+      const类型的对象能完成其中大部分,但是不是所有的操作都适合.主要的限制就是只能在const类型的对象上执行不改变其内容的操作.
+
+** 函数
+   函数体是一个语句块。块构成一个新的作用域，我们可以在其中定义变量。形参和函数体内部
+   定义的变量统称为局部变量。它们对函数而言是“局部”的，仅在函数的作用域内可见，
+   同时局部变量还会隐藏在外层作用域中同名的其他所有声明中。
+
+   在所有函数体之外定义的对象存在与程序的整个执行过程中。此类对象在程序启动是创建，
+   知道程序结束才会销毁。局部变量的生命周期依赖于定义的方式。
+*** 局部静态对象
+    局部静态对象在程序的执行路径第一次经过对象定义语句时初始化，并且知道程序终止才被销毁，
+    在此期间即使函数对象所在的函数结束执行也不会对它有影响。
+*** 在头文件中进行函数声明
+    函数应该在头文件中声明而在源文件中定义。
+
+    *定义函数的源文件应该把包含函数声明的头文件包含进来，编译器负责验证函数的定义和声明是否匹配。*
+
+    *含有函数声明的头文件应该包含到定义函数的源文件中。*
+*** 分离式编译
+    分离式编译允许我们把程序分割到几个文件中去，每个文件独立编译。
+
+    *编译和链接多个文件*
+
+    假设 =fact= 函数的定义位于一个名为 =fact.cc= 的文件中，它的声明位于名为 =Chapter6.h= 头文件。另外，名为 =factMain.cc= 的文件中创建 =main= 函数，
+    =main= 函数将调用 =fact= ，如果我们修改了其中一个源文件爱呢，那么只需要重新编译那个改动了的文件。
+    大多数编译器提供了分离式编译每个文件的机制，这一过程通常会产生一个后缀名是 =.obj= (Windows)或.o(UNIX)的文件，后缀名的含义是该文件包含 ~对象代码~ 。
+    接下来编译器负责把对象文件链接在一起形成可执行文件。
+#+BEGIN_SRC
+CC -c factMain.cc # generates factMain.o
+CC -c fact.cc # generates fact.o
+CC factMain.o fact.o # generates factMain.exe or a.out
+CC factMain.o fact.o -o main # generates main or main.exe
+#+END_SRC
+*** 参数传递
+    每次调用函数时都会重新创建它的形参，并用传入的 *实参对形参进行初始化* 。
+
+    *形参初始化的机理与变量初始化一样。*
+
+    和其他变量一样，形参的类型决定了形参和实参交互的方式。如果形参是引用类型，它将绑定到对应的实参n撒谎个;
+    否则，将实参拷贝后赋给形参。
+
+    当形参是引用类型时，我们说它对应的实参被 *引用传递* (passed by reference) 或者函数被传引用调用。和其他引用一样，引用形参也是它绑定的对象的别名;也就是说， *引用形参是它对应实参的别名* 。
+
+    当实参的值被拷贝给形参时，形参和实参是两个相互独立的对象。我们说这样的实参是 *值传递* 或者函数被传值调用。
+
+    NOTE: 这里有和原来理解不一样的地方，函数的参数传递和变量赋值是一样的。
+
+#+BEGIN_QUOTE
+如果函数去无须改变引用形参的值，最好将其申明为常量引用。
+#+END_QUOTE
+
+    允许一个常量引用绑定非常量的对象、字面值。对const的引用可能引用一个并非const的对象。这也是函数形参用常量引用，而调用时用普通变量也可以，因为初始化相当于变量赋值。
+
+    例如:
+#+BEGIN_SRC
+int i = 42;
+int &r1 = i; //引用r1绑定对象i
+const int &r2 = i; //r2也绑定对象i，但是不允许通过r2修改i的值
+r1 = 0; //r1并非常量，i的值修改为0
+r2 = 0; //错误： r2是一个常量引用。
+
+int fact(const int &x){
+   printf("%d", x);
+   return 0;
+}
+
+int main(){
+   int c = 10;
+   fact(&c);// 这是正确的，虽然fact在初始化时相当于执行语句 const int &x = c,而可以用变量来初始化常量。
+}
+
+#+END_SRC
+
+    NOTE: *数组形参* : 数组的两个特殊性质对我们定义和哈斯用作用在数组上的函数有影响，
+    这两个性质分别是：不允许拷贝数组以及使用数组时（通常）会将其转换成指针。因为不能拷贝数组，所以我们无法以值传递的方式使用数组参数。
+    因为数组会被转换成指针，所以当我们为函数传递一个数组时，实际上传递的是指向数组首元素的指针。
+
+
+    NOTE: *返回* :
+
+    1. 值是如何被返回的： 返回一个值的方式和初始化一个变量或形参的方式完全一样：返回的值用于初始化调用点的一个临时量，
+       该临时量就是函数调用的结果。
+    2. 不要返回局部对象的引用或指针： 函数完成后，它所占有的存储空间也随之被释放掉。因此，
+       函数终止意味这局部变量的引用将指向不再有效的内存区域。返回局部对象的指针也是错误的。一旦
+       函数完成，局部对象被释放，指针将指向一个不存在的对象。
+
+    *函数指针*
+
+    函数指针指向的是函数而非对象。h额其他指针一样，函数指针指向某种特定类型。函数的类型由它的返回类型和形参类型共同决定，与函数名无关。
+** 类
+   *访问控制与封装*
+
+   + 定义在 *public* 说明符之后的成员在整个程序内可以被访问,public成员定义类的接口.
+   + 定义在 *private* 说明符之后的成员可以被类的成员函数访问,但是不能被使用该类的代码访问,private部分封装了(即隐藏了)类的实现细节.
+
+   *友员* : 类可以允许其他类或者函数访问它的非共有成员,方法是令其他类或者函数成为它的 *友员* . 如果类想把一个函数作为它的友员,只需要增加一条以friend关键字开始的函数声明语句即可.
+** 动态内存
+   到目前为止,我们编写的程序中所使用的对象都有着严格定义的生存期.全局对象在程序启动时分配,在程序结束时销毁.对于局部自动对象,当我们
+   进入其定义所在的程序块时被创建,在离开块时销毁.局部static对象在第一次使用前分配,在程序结束时销毁.
+
+   除了自动和static对象外,C++还支持动态分配对象,动态分配的对象的生存期与它们在哪里创建是无关的,只有当显式地被释放时,这些对象才会销毁.
+
+   程序用堆来存储 *动态分配* 的对象--即那些程序运行时分配的对象.动态对象的生存期由程序来控制,也就是说,当动态对象不再使用时,我们的代码必须显式地释放它们.
+
+  *NOTE: 子程序中在动态内存中分配的对象在子程序结束后也不会销毁*
+
+  关键字: ~new~, ~delete~.
+
+  新的标准库提供了两种 *智能指针* 类型来管理动态对象.
+** 模板与泛型编程
+   模板是C++中泛型编程的基础.一个模板就是一个创建类或函数的蓝图或者说公式.当使用一个vector这样的泛型类型,或者find这样的泛型函数时,我们提供
+   足够的信息,将蓝图转换为特定的类或函数.这种转换发生在编译时.
+*** 函数模板
+    一个模板就是一个公式,可用来生成针对特定类型的函数版本.
+#+BEGIN_SRC
+template <typename T>
+int compare(const T &v1, cosnt T &v2)
+{
+   if (v1 < v2) return -1;
+   if (v2 < v1) return 1;
+   return 0;
+}
+#+END_SRC
+    当我们调用一个函数模板时,编译器用函数是残来为我们推断模板实参.
+
+    *函数模板和类模板成员函数的定义通常放在头文件中.*
+
+*** 类模板
+    类模板是用来生成类的蓝图.与函数模板的不同之处是,编译器不能为类模板推断模板参数类型.
+
+    类模板的成员函数本省是一个普通函数.但是类模板的每个实例都设有其自己版本的成员函数.因此,类模板成员函数和模板相同的模板参数.因而,定义在类模板之外的
+    成员函数就必须以关键字template开始,后接类模板参数列表.
+#+BEGIN_SRC
+template <typename T>
+void Blob<T>::check(size_type i, const std::string &msg) const
+{
+    if (i >= data->size() )
+      throw std::out_of_range(msg);
+}
+#+END_SRC
+** 命名空间
+   命名空间分割了全局命名空间,其中每个命名空间是一个作用域.通过在某个命名空间中定义库的名字,库的作者可以避免全局名字固有的限制.
+
+   每个命名空间都是一个作用域
+
+   命名空间可以定义在几个不同的部分.例如:
+#+BEGIN_SRC
+namspace nsp{
+ //相关声明
+}
+#+EN_SRC
+可能是定义了一个名为nsp的新的命名空间,也可能是为已经存在的命名空间添加一些新的成员.

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+	<link rel="stylesheet" type="text/css" href="/styles/post.css">
+    <script src="/scripts/jquery-3.1.1.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script type="text/javascript">
+
+    </script>
+	<title>图像拼接算法流程</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+		<div id="mytitle">
+    	<a href="/index.html"><img src="/images/racket.png" height="50" width="50" alt="" /></a>
+		<a href="/index.html">oyzh's Blog</a>
+		</div>
+		<a href="https://github.com/oyzh/oyzh.github.io"><img id="forkme" src="/images/fork_me.png"" alt="Fork me on GitHub"></a>
+      </nav>
+     </header>
+	<article>
+	<h1 id="articlename">图像拼接算法流程</h1>
+		<p>
+使用特征点匹配，计算两张图片的变换矩阵，将所有点变换后就可以得到拼接后的图像。主要就是不同坐标系中的点的变化。参考：CS131 PA1。
+</p>
+<ol class="org-ol">
+<li>使用DoG来得到兴趣点
+</li>
+<li>在兴趣点处构建SIFT描述子。这一步非常重要，但是代码里面实现的不是原始的SIFT特征，主要是假设了没有旋转变换
+</li>
+<li>匹配描述子，这里是计算两幅图的欧式距离。有一个限制是：某一兴趣点在另一幅图中最短距离要比第二短距离要相差大一点，这里设定一个指数，即最短距离要小于第二短距离的0.7倍，这个指数可以自己设置
+</li>
+<li>得到变换矩阵，采用齐次坐标，根据变换矩阵的自由度，如果得到的方程多于自由度的个数，使用最小二乘法得到最近似的解
+</li>
+<li>RANSAC方法更好的得到变换矩阵，如果3中有匹配的点还是有错误的话，得到的旋转矩阵是不精确的。使用RANSAC法可以得到更好的旋转矩阵。具体方法下面介绍
+</li>
+<li>图像拼接，注意多张图片时如何拼接，要用到线性代数的一点知识
+</li>
+</ol>
+
+<p>
+RANSAC方法：
+提前设置三个阈值：一是接受的偏差距离，二是生成最后模型的最小点个数阈值，最后是最大迭代次数
+</p>
+<ol class="org-ol">
+<li>如果迭代次数大于最大迭代次数，则失败并退出。否则将匹配的点随机分成两部分，一部分是训练集，一部分是检验集，训练集最好是刚好可以生成模型的个数，比如直线的话就是两个点。
+</li>
+<li>用训练集生成模型
+</li>
+<li>用计算每一个测试集中的点相对模型的错误（用距离表示）
+</li>
+<li>判断有多少个点在偏差距离以内，如果个数大于最小点个数阈值，就用所有在偏差距离以内的点生成最后的模型，否则转到第一步
+</li>
+</ol>
+
+
+<!-- LiveRe City install code -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC8yNjk2NC8zNTUx">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>Please activate JavaScript for write a comment in LiveRe</noscript>
+</div>
+<!-- completed City install code -->
+
+	</article>
+
+
+	<footer>
+	Copyright &#x000A9;&nbsp;2016 &#x000B7 <a href="/index.html">oyzh</a>
+	</footer>
+  </body>
+	<script>$("pre").wrapInner("<code></code>");</script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+	<script>
+		hljs.initHighlightingOnLoad();
+	</script>
+</html>

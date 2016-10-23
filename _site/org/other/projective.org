@@ -1,0 +1,31 @@
+#+HTML_MATHJAX: align:"center" mathml:t path:"http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" indent: 0em 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="/css/style.css">
+#+BEGIN_HTML
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({ TeX: { equationNumbers: {autoNumber: "AMS"} } });
+</script>
+#+END_HTML
+#+OPTIONS: author:nil
+#+OPTIONS: creator:nil
+#+OPTIONS: timestamp:nil
+#+OPTIONS: num:nil
+-----
+#+TITLE:射影几何
+#+OPTIONS: toc:nil
+根据《图像处理、分析与机器视觉》第11章：3D视觉和几何。
+
+多视角几何的数学工具是射影几何，多视角集合能够从数学上处理以下三个方面的关系：
++ 场景中的3D点（更一般地说，还有线以及其他简单几何形状）。
++ 摄像机的投影。
++ 3D场景中多个摄像机投影之间的关系。
+
+* 射影几何中的点和超平面
+* 单应性
+单应性也认为是共线或投影变换，是
+
+-----
+#+BEGIN_HTML
+<a href="http://oyzh.github.io">Back to Homepage</a>
+<br>
+<a href="http://github.com/oyzh">Github</a>
+#+END_HTML

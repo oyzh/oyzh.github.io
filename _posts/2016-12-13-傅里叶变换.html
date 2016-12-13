@@ -11,7 +11,7 @@ excerpt: 傅里叶变换的意义和应用,特别是图像处理上的应用
 
 
 <div class="figure">
-<p><img src="/images/tran.png" alt="tran.png" />
+<p><img src="file:///images/tran.PNG" alt="tran.PNG" />
 </p>
 </div>
 </div>
@@ -54,15 +54,33 @@ $$Acos(2\pi\lambda t + \theta)$$
 也是复数,如上面的 \(F(\xi)\) ,并且用 \(\xi\) 作为频率值.可以通过 \(e^{i\omega}=cos(\omega)+isin(\omega)\) 得知,这种表示方法和用三角函数表示
 实函数是一样的,只是不同的表现形式,这里的频率是正负的, \(F(\xi)\) 是共轭对称的,这是可以消除虚部,设 \(F(\xi)=x_{\xi}+iy_{\xi}\) ,
 因此 \(F(-\xi)=x_{\xi}-iy_{\xi}\) ,因此:
-$$F(\xi)*e^{\xi}+F(-\xi)*e^{-i\xi}$$
+$$F(\xi) \times e^{\xi}+F(-\xi) \times e^{-i\xi}$$
 $$=(x_\xi+iy_\xi)(cos\xi+isin\xi)+(x_\xi-iy_\xi)(cos\xi-isin\xi)$$
 $$=2x_\xi cos\xi - 2y_\xi sin\xi$$
 可以看到,消除虚部后得到了用复指数函数幅度表示的三角函数的幅度.因此这两种方法是等价的.
 </p>
 </div>
 </li>
+<li><a id="sec-4" name="sec-4"></a>二维离散傅里叶变换<br  /><div class="outline-text-2" id="text-4">
+<p>
+令 \(f(x,y)\) 表示一幅大小为 \(M \times N\) 的图像,其中 \(x=0,1,2,\dots,M-1\) 和 \(y=0,1,2,\dots,N-1\) . \(f\) 的二维
+离散傅里叶变换可以表示为 \(F(u,v)\),如下所示:
+$$ F(u,v) = \Sigma_{x=0}^{M-1}\Sigma_{y=0}^{N-1}f(x,y)e^{-j2\pi (ux/M + vy/N)}$$
+其中 \(=0,1,2,\dots,M-1\) 和 \(v=0,1,2,\dots,N-1\) .
+</p>
 
-<li><a id="sec-4" name="sec-4"></a>总结<br  /><div class="outline-text-2" id="text-4">
+<p>
+注意如果 \(u,v\) 取无穷,则傅里叶变化是周期变换的,在二维上是一 \((M,N)\) 为周期,
+一般来说低频分量的幅值比较大,如果我们要可视化频谱,我们肯定是截取一个周期,但是
+具体怎样截取这个周期对可视化的结果有影响,比如在二维时,因为在 \((0,0)\) 附近是比较大
+的幅值,所以如果按频率和幅值做图,则会在四个角上比较亮,而我们可能希望将 \((0,0)\) 移动到中心,
+这时有两个办法,一是直接移动得到的频谱图,还有一种方法是将 \(f(x,y)\) 做以下变化,之后再做傅里叶变换,这样变换后的
+结果直接就是将原来的原点移动到中心.
+$$ f'(x,y) = f(x,y) \times (-1)^{(x+y)} $$
+</p>
+</div>
+</li>
+<li><a id="sec-5" name="sec-5"></a>总结<br  /><div class="outline-text-2" id="text-5">
 <p>
 原来对傅里叶变换的困惑主要有两方面:
 </p>

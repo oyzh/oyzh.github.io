@@ -3,9 +3,7 @@ layout: post
 title: 计算机视觉(CS131)
 excerpt: 根据FeiFei-Lif的视觉课程(CS131)参考的相应章节
 ---
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">分段</h2>
-<div class="outline-text-2" id="text-1">
+<ul class="org-ul"><li><a id="sec-1" name="sec-1"></a>分段<br  /><div class="outline-text-2" id="text-1">
 <p>
 One way to think about "segmentation" is Clustering.
 </p>
@@ -44,14 +42,9 @@ Iteratively re-assign points to the nearest cluster center.
 Estimate modes of pdf
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="done DONE">DONE</span> F&amp;P ch7 线性滤波</h2>
-<div class="outline-text-2" id="text-2">
-</div><div id="outline-container-sec-2-1" class="outline-3">
-<h3 id="sec-2-1">移不变线性系统</h3>
-<div class="outline-text-3" id="text-2-1">
+<li><a id="sec-2" name="sec-2"></a><span class="done DONE">DONE</span> F&amp;P ch7 线性滤波<br  /><ul class="org-ul"><li><a id="sec-2-1" name="sec-2-1"></a>移不变线性系统<br  /><div class="outline-text-3" id="text-2-1">
 <p>
 卷积表示了一大类系统的性质。特别的，大多数图像系统可以高度近似成具有以下三个重要性质：
 </p>
@@ -80,9 +73,7 @@ $$R(kf)=kR(f)$$
 一个同时满足线性和移不变性的系统称为 <b>移不变线性系统</b> ，或简称为系统。
 </p>
 </div>
-<div id="outline-container-sec-2-1-1" class="outline-4">
-<h4 id="sec-2-1-1">离散卷积</h4>
-<div class="outline-text-4" id="text-2-1-1">
+<ul class="org-ul"><li><a id="sec-2-1-1" name="sec-2-1-1"></a>离散卷积<br  /><div class="outline-text-4" id="text-2-1-1">
 <p>
 可以看出，作为一个系统，只要知道系统对0位移处的单位响应，就可以得到任何一个输入向量（或矩阵）的响应。响应的形式可以写成脉冲响应与输入的卷积。比如照相机系统，它是一个移不变线性系统，即任何处对光的响应都可以是零点处对同样光强度（频率）响应然后平移，并且满足线性公式。因此，我们只要知道这个系统对单位强度（频率）的光在零点处的响应，那么对于一张图片上任意位置都是不同光强（频率）时也可以通过卷积的方式得到响应。
 </p>
@@ -91,20 +82,16 @@ $$R(kf)=kR(f)$$
 一般所谓的卷积模板或核也可以看作一个系统。这时，输入是图片，通过这个系统得到输出。这个系统满足上面定义，因此可以做卷积。
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-2-1-2" class="outline-4">
-<h4 id="sec-2-1-2">连续卷积</h4>
-<div class="outline-text-4" id="text-2-1-2">
+<li><a id="sec-2-1-2" name="sec-2-1-2"></a>连续卷积<br  /><div class="outline-text-4" id="text-2-1-2">
 <p>
 得到对脉冲的响应并做一种积分的方式称为卷积。
 </p>
 </div>
-</div>
-</div>
-<div id="outline-container-sec-2-2" class="outline-3">
-<h3 id="sec-2-2">傅里叶变换</h3>
-<div class="outline-text-3" id="text-2-2">
+</li></ul>
+</li>
+<li><a id="sec-2-2" name="sec-2-2"></a>傅里叶变换<br  /><div class="outline-text-3" id="text-2-2">
 <p>
 将基变为一些列正弦函数，把信号表示为无限个正弦函数的无限加权和。这意味着信号的快速变化是明显的，因为它们在新的基中对应于高频正弦项的高幅值。
 </p>
@@ -113,10 +100,8 @@ $$R(kf)=kR(f)$$
 傅里叶变换包含一个实部和一个虚部，考虑复函数的幅度和相位，并分别画出，因而分别称为幅度谱和相位谱（以二维的频率u，v为坐标）。图像的幅度谱经常是相似的。这一点看起来是自然现象，而不是定理证明。因此，图像的幅度谱提供的信息相当有限。
 </p>
 </div>
-</div>
-<div id="outline-container-sec-2-3" class="outline-3">
-<h3 id="sec-2-3">采样</h3>
-<div class="outline-text-3" id="text-2-3">
+</li>
+<li><a id="sec-2-3" name="sec-2-3"></a>采样<br  /><div class="outline-text-3" id="text-2-3">
 <p>
 从一个连续函数（比如到达照相机系统的亮光）得到一组离散点上的数值（就像照片中每一个像素值）称为采样。构建一个模型，可以准确地得到采样中丢失了什么样的信息。
 </p>
@@ -125,9 +110,7 @@ $$R(kf)=kR(f)$$
 用形式化模型的术语，对一个二维函数（而不是一维函数）进行采样时，得到一个矩阵。
 </p>
 </div>
-<div id="outline-container-sec-2-3-1" class="outline-4">
-<h4 id="sec-2-3-1">折叠失真</h4>
-<div class="outline-text-4" id="text-2-3-1">
+<ul class="org-ul"><li><a id="sec-2-3-1" name="sec-2-3-1"></a>折叠失真<br  /><div class="outline-text-4" id="text-2-3-1">
 <p>
 采样中会有信息的丢失。采样过慢的信号会显示错误的结果，原始信号中的高频空间元素在采样信号中会表现为低频元素——这种效应称为折叠失真。
 </p>
@@ -144,11 +127,9 @@ $$R(kf)=kR(f)$$
 函数的傅里叶变换后的频率并不是充满整个频率空间，而是有最大值，即原函数有最大频率。比如正弦函数傅里叶变换后就只有一个频率值。用一定频率对函数进行采样后，对采样后的值做傅里叶变换等于对原函数做傅里叶变换并平移。因此只要平移后没有交叠，就可以使用采样傅里叶变化的逆变换来准确得到原信号，这里涉及奈奎斯特定理。这里要证明采样后的傅里叶变换是原函数傅里叶变换的平移。这非常重要。可以通过这个证明奈奎斯特定理，即为什么采样频率要两倍的最高频率才能重建。
 </p>
 </div>
-</div>
-</div>
-<div id="outline-container-sec-2-4" class="outline-3">
-<h3 id="sec-2-4"><span class="todo TODO">TODO</span> 平滑与重采样</h3>
-<div class="outline-text-3" id="text-2-4">
+</li></ul>
+</li>
+<li><a id="sec-2-4" name="sec-2-4"></a><span class="todo TODO">TODO</span> 平滑与重采样<br  /><div class="outline-text-3" id="text-2-4">
 <p>
 根据奈奎斯特定理，不能对一个图像取每k个像素的方法进行压缩。因为只有采样频率为原图像最高频率2倍才能复原。因此，如果将从原图像中去掉高于采样频率的空间频率，这样采样后的图像可以完全得到原图像去掉高频后的图像，这样的图像没有折叠失真，但因为去掉高频，所以会损失细节。这可以通过将原图像的傅里叶变换与二维删函数相乘实现，删函数是低通滤波。也可以让原函数卷积。
 </p>
@@ -171,18 +152,14 @@ $$R(kf)=kR(f)$$
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="done DONE">DONE</span> F&amp;P ch8 边缘检测</h2>
-<div class="outline-text-2" id="text-3">
+</li></ul>
+</li>
+<li><a id="sec-3" name="sec-3"></a><span class="done DONE">DONE</span> F&amp;P ch8 边缘检测<br  /><div class="outline-text-2" id="text-3">
 <p>
 图像中亮度明显而急剧的变化的点通常称为边缘或边缘点。
 </p>
 </div>
-<div id="outline-container-sec-3-1" class="outline-3">
-<h3 id="sec-3-1">噪声</h3>
-<div class="outline-text-3" id="text-3-1">
+<ul class="org-ul"><li><a id="sec-3-1" name="sec-3-1"></a>噪声<br  /><div class="outline-text-3" id="text-3-1">
 <p>
 边缘处理中一个重要的问题就是图像噪声。这是因为边缘检测器是为了响应急剧变化而构造的;噪声使得图像导数有限差分估计变得不可再用。我们用这个观察结果作为研究一般图像中噪声的推动力。
 </p>
@@ -191,9 +168,7 @@ $$R(kf)=kR(f)$$
 噪声这个术语通常表示无法获取信息的图像度量或者与图像中所包含的无关信息的图像度量，其余的则都是信号。认为噪声不包含信息的看法是错误的——例如，我们可以通过在一个黑暗的房间中，使用盖上镜头盖的照相机拍一张照片从而获取到该照相机的温度的估计。此外，由于在没有噪声模型的情形下，无法确定噪声的意义，所以，认为噪声是没有模型的看法是错误的。噪声是我们并不需要使用的任何信息，这就是它的全部。
 </p>
 </div>
-<div id="outline-container-sec-3-1-1" class="outline-4">
-<h4 id="sec-3-1-1">可加性静态高斯噪声</h4>
-<div class="outline-text-4" id="text-3-1-1">
+<ul class="org-ul"><li><a id="sec-3-1-1" name="sec-3-1-1"></a>可加性静态高斯噪声<br  /><div class="outline-text-4" id="text-3-1-1">
 <p>
 在可加性静态高斯噪声模型中，每个像素点都相互独立地加入上一个根据同一个高斯概率分布产生的值。几乎所有这种分布的平均值都是零。标准偏差是这种模型的一个参数。这个模型用于描述照相机中的热噪声。对于线性的导数滤波器，高斯噪声的响应均值是零，但是响应的方差急剧上升。
 </p>
@@ -208,11 +183,9 @@ $$E[\{R(\mathcal N)_{i,j}-E[R(\mathcal N)_{i,j}]\}^2]={\sigma}^2 \sum G_{u,v}^2$
 通过上面的式子可以看到，对于一般n阶导数滤波器，高斯噪声的响应均值为零，但是响应的方差急剧上升（因为后面是平方）。
 </p>
 </div>
-</div>
-</div>
-<div id="outline-container-sec-3-2" class="outline-3">
-<h3 id="sec-3-2">导数估计</h3>
-<div class="outline-text-3" id="text-3-2">
+</li></ul>
+</li>
+<li><a id="sec-3-2" name="sec-3-2"></a>导数估计<br  /><div class="outline-text-3" id="text-3-2">
 <p>
 简单的有限差分滤波器能够对噪声产生强烈的响应，于是使用两个有限差分滤波器（每个方向一个）将是一个求梯度的不好的方法。处理这个问题的方法是对图像平滑后求道（同样也会平滑导数）。在实际中，图像几乎总是被高斯滤波器平滑过的——事实上，有限差分操作是平滑过的。这将讨论为什么平滑是有用的，以及为什么高斯滤波器是一个平滑滤波器的很好选择。
 </p>
@@ -221,9 +194,7 @@ $$E[\{R(\mathcal N)_{i,j}-E[R(\mathcal N)_{i,j}]\}^2]={\sigma}^2 \sum G_{u,v}^2$
 平滑一个函数，然后求其导数相当于将其与一个平滑的核函数的导数进行卷积。因此只需与高斯函数的导数求卷积，而不必先卷积然后求微分。
 </p>
 </div>
-<div id="outline-container-sec-3-2-1" class="outline-4">
-<h4 id="sec-3-2-1">为什么平滑是有作用的</h4>
-<div class="outline-text-4" id="text-3-2-1">
+<ul class="org-ul"><li><a id="sec-3-2-1" name="sec-3-2-1"></a>为什么平滑是有作用的<br  /><div class="outline-text-4" id="text-3-2-1">
 <p>
 一般来说，任何对我们有意义的变化都将影响一堆像素点。例如，一个物体的轮廓将会导致在图像上一长条链状的像素点有较大的导数值。对于很多噪声模型而言，一些来源于噪声的大的导数值主要是局部事件。这表明平滑一个差分过的图像更倾向与支持那些感兴趣的变化，并且抑制噪声的影响。
 </p>
@@ -243,11 +214,9 @@ $$\sum{uv}G_{uv}^2 \le 1$$
 另一个途径是根据空间频率来解释。可以知道，可加性静态高斯噪声在各个频率有着相同分布的能量。如果将噪声进行微分，就加重了高频。如果不试图去修正这个情况，则在梯度图中将会由于噪声的影响而产生偶然出现的过大值。使用一个高斯滤波器将抑制这些高频（高斯滤波器类似一个低通滤波器），就好像它对重采样所起的作用一样。
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-3-2-2" class="outline-4">
-<h4 id="sec-3-2-2">为什么使用高斯平滑</h4>
-<div class="outline-text-4" id="text-3-2-2">
+<li><a id="sec-3-2-2" name="sec-3-2-2"></a>为什么使用高斯平滑<br  /><div class="outline-text-4" id="text-3-2-2">
 <ul class="org-ul">
 <li>效率：通过对一个已经频化过的图像进行平滑从而得到深度平滑的图像
 </li>
@@ -257,15 +226,10 @@ $$\sum{uv}G_{uv}^2 \le 1$$
 </li>
 </ul>
 </div>
-</div>
-</div>
+</li></ul>
+</li>
 
-<div id="outline-container-sec-3-3" class="outline-3">
-<h3 id="sec-3-3">对边缘进行检测</h3>
-<div class="outline-text-3" id="text-3-3">
-</div><div id="outline-container-sec-3-3-1" class="outline-4">
-<h4 id="sec-3-3-1"><span class="todo TODO">TODO</span> 使用拉普拉斯算子在检测边缘</h4>
-<div class="outline-text-4" id="text-3-3-1">
+<li><a id="sec-3-3" name="sec-3-3"></a>对边缘进行检测<br  /><ul class="org-ul"><li><a id="sec-3-3-1" name="sec-3-3-1"></a><span class="todo TODO">TODO</span> 使用拉普拉斯算子在检测边缘<br  /><div class="outline-text-4" id="text-3-3-1">
 <p>
 注意，这里找的是过零点，也就是从负到正或从正到负，而不是直接找零点，因为一阶导数区域为常数时拉普拉斯也是零，但这就不是边缘点。
 </p>
@@ -274,15 +238,11 @@ $$\sum{uv}G_{uv}^2 \le 1$$
 这里的LoG和斑点检测中的LoG的区别？
 </p>
 </div>
-</div>
-<div id="outline-container-sec-3-3-2" class="outline-4">
-<h4 id="sec-3-3-2">基于梯度的边缘检测器</h4>
-</div>
-</div>
-</div>
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="done DONE">DONE</span> F&amp;P ch15.2.2 镜头的边界检测</h2>
-<div class="outline-text-2" id="text-4">
+</li>
+<li><a id="sec-3-3-2" name="sec-3-3-2"></a>基于梯度的边缘检测器<br  /></li></ul>
+</li></ul>
+</li>
+<li><a id="sec-4" name="sec-4"></a><span class="done DONE">DONE</span> F&amp;P ch15.2.2 镜头的边界检测<br  /><div class="outline-text-2" id="text-4">
 <p>
 较长的视频流是由一系列镜头组成的——镜头指的是基本上显示的是统一物体的较短视频流。一般来说，这些镜头是编辑过程的产物。很少有两镜头在何处衔接的记录。用一些镜头来表示一段视频是很有用的，而每一个镜头又可以用关键帧表示。这种表示可以用于视频的检索或者概括视频内容以便用户进行浏览。
 </p>
@@ -301,10 +261,8 @@ $$\sum{uv}G_{uv}^2 \le 1$$
 </li>
 </ul>
 </div>
-</div>
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="done DONE">DONE</span> Szeliski ch4.1.1 特征检测器</h2>
-<div class="outline-text-2" id="text-5">
+</li>
+<li><a id="sec-5" name="sec-5"></a><span class="done DONE">DONE</span> Szeliski ch4.1.1 特征检测器<br  /><div class="outline-text-2" id="text-5">
 <p>
 怎样才能找到能够在其他图像中稳定匹配的图像位置，也就是说，什么是适合跟踪的特征。
 </p>
@@ -337,20 +295,13 @@ I_xI_y&I_y^2\\
 以上算法基于最大化空间稳定性，这种点是通过计算自相关矩阵，并根据矩阵的一些特征来判断点是否稳定。所谓最大化空间稳定性就是指可以最稳定的从变化了之后的图片中检测出来。
 </p>
 </div>
-</div>
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6"><span class="done DONE">DONE</span> F&amp;P ch1-3 摄像机</h2>
-<div class="outline-text-2" id="text-6">
+</li>
+<li><a id="sec-6" name="sec-6"></a><span class="done DONE">DONE</span> F&amp;P ch1-3 摄像机<br  /><div class="outline-text-2" id="text-6">
 <p>
 在第一版是1-3章，第二版综合到了一章。
 </p>
 </div>
-<div id="outline-container-sec-6-1" class="outline-3">
-<h3 id="sec-6-1">针孔照相机</h3>
-<div class="outline-text-3" id="text-6-1">
-</div><div id="outline-container-sec-6-1-1" class="outline-4">
-<h4 id="sec-6-1-1">透视投影</h4>
-<div class="outline-text-4" id="text-6-1-1">
+<ul class="org-ul"><li><a id="sec-6-1" name="sec-6-1"></a>针孔照相机<br  /><ul class="org-ul"><li><a id="sec-6-1-1" name="sec-6-1-1"></a>透视投影<br  /><div class="outline-text-4" id="text-6-1-1">
 <p>
 针孔成像模型简单，假设针孔可以缩小成一个点，那么就只有唯一的一条光线穿过三个点：成像板平面（或称为成像面）上的一个点、针孔以及景物中的某个点。在现实中，针孔（不管多小）总不是无限小，成像平面上的每个点收集的是具有一定角度的锥形光束的光线，因此严格来说理想化的、极其简单的成像几何模型是不成立的。在加上实际的照相机一般都配备有镜头，因此使得事情更加复杂。但是针孔透视投影模型（或称中心透视投影）在数学上是很方便的。
 </p>
@@ -367,11 +318,9 @@ I_xI_y&I_y^2\\
 <i>分析：这里的虚拟图像指的是我们假象的图像，实际并不存在，只是因为它与物体方向相同，而且与图像一样大，所以有利分析。</i>
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-6-1-2" class="outline-4">
-<h4 id="sec-6-1-2">仿射投影</h4>
-<div class="outline-text-4" id="text-6-1-2">
+<li><a id="sec-6-1-2" name="sec-6-1-2"></a>仿射投影<br  /><div class="outline-text-4" id="text-6-1-2">
 <p>
 针孔透视仅仅是成像过程中几何关系的一种近似。这里讨论的是一种更加粗略的近似，称为仿射投影模型，它在某些情况下也是有用的。我们的注意力集中在两种特定的仿射模型——弱透视和正交投影上，第三种称为类透视模型是以后讨论。
 </p>
@@ -384,21 +333,17 @@ I_xI_y&I_y^2\\
 当景物深度与它们到摄像机的平均距离相比很小时，放大律可以看做是一个常数，这种投影模型称为 <b>弱透视投影</b> 或 <b>按比例投影</b> 。如果预先知道摄像机到景物的距离大体保持常数，则可以进一步将图像坐标归一化使m=-1.这就是正交投影。尽管弱透视投影在很多成像条件下是可以接受的，但假设纯正正交投影通常是不现实的。
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-6-1-3" class="outline-4">
-<h4 id="sec-6-1-3">无镜头成像模型总结</h4>
-<div class="outline-text-4" id="text-6-1-3">
+<li><a id="sec-6-1-3" name="sec-6-1-3"></a>无镜头成像模型总结<br  /><div class="outline-text-4" id="text-6-1-3">
 <p>
 这里对没有镜头的摄像机的成像模型进行总结，直接的小孔成像投影是有深度的，而仿射投影假设景物在一个平行的平面上，因此条件是景物深度与它们到摄像机的平均距离相比很小，这样的好处是处理更简单，因为直接有一个放大系数可以使用。
 </p>
 </div>
-</div>
-</div>
+</li></ul>
+</li>
 
-<div id="outline-container-sec-6-2" class="outline-3">
-<h3 id="sec-6-2">带镜头的摄像机</h3>
-<div class="outline-text-3" id="text-6-2">
+<li><a id="sec-6-2" name="sec-6-2"></a>带镜头的摄像机<br  /><div class="outline-text-3" id="text-6-2">
 <p>
 大部分摄像机都配备有镜头。使用镜头主要有两个理由：第一个理由是收集光线，因为理想的针孔模型中，一条管线投影到图像平面的一个点。当然，实际的针孔是有尺寸的，所以图像平面中每一个点是由一定角度范围射过来的锥形光束照亮的。针孔的尺寸越大，这个锥形光束越宽，因此图像也越明亮，但是大的尺寸的针孔导致图像模糊。缩小针孔能使图像锐化，但减少了到达图像平面光的总量，并且可能产生衍射现象。使用镜头的第二个理由是能保持图像锐化聚焦，同时又可以较大面积中收集光线。
 </p>
@@ -411,17 +356,13 @@ I_xI_y&I_y^2\\
 这一章非常重要，以下没有列出来，只有一些没有的推导。
 </p>
 </div>
-<div id="outline-container-sec-6-2-1" class="outline-4">
-<h4 id="sec-6-2-1">近轴几何学</h4>
-<div class="outline-text-4" id="text-6-2-1">
+<ul class="org-ul"><li><a id="sec-6-2-1" name="sec-6-2-1"></a>近轴几何学<br  /><div class="outline-text-4" id="text-6-2-1">
 <p>
 这里假设折射表面是圆形。考虑近轴（或一阶）几何光学的情况，也就是说，所有进入镜头的光线之间与镜头折射表面法线之间的夹角相对较小。当然，实际的镜头至少有两个折射表面为界。光线的路径可以使用近轴折射方程迭代构造。
 </p>
 </div>
-</div>
-<div id="outline-container-sec-6-2-2" class="outline-4">
-<h4 id="sec-6-2-2">薄透镜</h4>
-<div class="outline-text-4" id="text-6-2-2">
+</li>
+<li><a id="sec-6-2-2" name="sec-6-2-2"></a>薄透镜<br  /><div class="outline-text-4" id="text-6-2-2">
 <p>
 这里考虑透镜具有两个半径为R的球形表面，折射系数为n的情况。假设镜头处在真空中，折射系数为1,是薄透镜（也就是说进入透镜的光线从右边边界折射后立即又在左边界上再次折射）。
 </p>
@@ -448,10 +389,8 @@ $$\frac f {-z} + \frac f {z'}=1$$
 $$\frac 1 {z'}-\frac 1 z=\frac 1 f$$
 </p>
 </div>
-</div>
-<div id="outline-container-sec-6-2-3" class="outline-4">
-<h4 id="sec-6-2-3">实际透镜</h4>
-<div class="outline-text-4" id="text-6-2-3">
+</li>
+<li><a id="sec-6-2-3" name="sec-6-2-3"></a>实际透镜<br  /><div class="outline-text-4" id="text-6-2-3">
 <p>
 更为实际的简单光学系统是厚透镜。描述厚透镜性能的方程式很容易从近轴折射方程式导出。注意，这种情况下，唯一没有发生折射的光线是沿着光轴的光线。
 </p>
@@ -460,20 +399,16 @@ $$\frac 1 {z'}-\frac 1 z=\frac 1 f$$
 简单透镜会产生若干种像差。这是因为近轴公式是在光线与透镜之间夹角很小才有效，也就是近轴时光线才据于一点。当角度变大时就不能用这个模型，也就是从一个点射出来的光线在透镜后面不聚集于一点。这就产生像差。
 </p>
 </div>
-</div>
-</div>
+</li></ul>
+</li>
 
-<div id="outline-container-sec-6-3" class="outline-3">
-<h3 id="sec-6-3">摄像机的几何模型</h3>
-<div class="outline-text-3" id="text-6-3">
+<li><a id="sec-6-3" name="sec-6-3"></a>摄像机的几何模型<br  /><div class="outline-text-3" id="text-6-3">
 <p>
 建立图像坐标与世界坐标之间的关系。首先回忆一下欧几里德解析几何的基本公式，然后将引入一些参数（内参数和外参数）表示图像坐标系与世界坐标系之间的联系，并推出通用的透视投影公式。最后还将推出仿射模型的简洁表达，仿射模型是远距离物体针孔成像的一种近似。
 </p>
 </div>
 
-<div id="outline-container-sec-6-3-1" class="outline-4">
-<h4 id="sec-6-3-1">坐标系变换和刚体运动</h4>
-<div class="outline-text-4" id="text-6-3-1">
+<ul class="org-ul"><li><a id="sec-6-3-1" name="sec-6-3-1"></a>坐标系变换和刚体运动<br  /><div class="outline-text-4" id="text-6-3-1">
 <p>
 同时考虑多个坐标系，并能得到它们之间的变换方式。如何描述两个坐标系的变化？在坐标系A中的点在坐标系B中坐标是多少？这些问题都可以得到回答。
 </p>
@@ -503,11 +438,9 @@ $$\cal T=\begin{pmatrix}
 是一个 <b>仿射变换</b> ，若 \(\cal T\) 是非奇异的任意4×4矩阵，我们称其为 <b>投影变换</b> 。仿射变换和投影变换都构成群。
 </p>
 </div>
-</div>
+</li>
 
-<div id="outline-container-sec-6-3-2" class="outline-4">
-<h4 id="sec-6-3-2"><span class="todo TODO">TODO</span> 摄像机参数和透视投影</h4>
-<div class="outline-text-4" id="text-6-3-2">
+<li><a id="sec-6-3-2" name="sec-6-3-2"></a><span class="todo TODO">TODO</span> 摄像机参数和透视投影<br  /><div class="outline-text-4" id="text-6-3-2">
 <p>
 还有具体的推导没有做。
 </p>
@@ -524,10 +457,8 @@ $$\cal T=\begin{pmatrix}
 内参数:我们可以为摄像机建立一个归一化图像平面，这个平面平行于摄像机的物理成像平面，且到针孔的距离为单位长度，我们可以通过一些参数，写出物理摄像机坐标系和归一化的图像坐标系之间的关系。
 </p>
 </div>
-</div>
-<div id="outline-container-sec-6-3-3" class="outline-4">
-<h4 id="sec-6-3-3"><span class="todo TODO">TODO</span> 摄像机的几何标定</h4>
-<div class="outline-text-4" id="text-6-3-3">
+</li>
+<li><a id="sec-6-3-3" name="sec-6-3-3"></a><span class="todo TODO">TODO</span> 摄像机的几何标定<br  /><div class="outline-text-4" id="text-6-3-3">
 <p>
 推导没有做。
 </p>
@@ -560,20 +491,16 @@ $$\cal T=\begin{pmatrix}
 </li>
 </ol>
 </div>
-</div>
-<div id="outline-container-sec-6-3-4" class="outline-4">
-<h4 id="sec-6-3-4">总结</h4>
-<div class="outline-text-4" id="text-6-3-4">
+</li>
+<li><a id="sec-6-3-4" name="sec-6-3-4"></a>总结<br  /><div class="outline-text-4" id="text-6-3-4">
 <p>
 这一章介绍了摄像机的模型，即通过一些参数来描述，它联系了摄像机与外部的世界。并且介绍了得到这些参数的方法。有了这些知识，就可以贯通现实世界与图片，使它们之间有了一个很好的数学模型。
 </p>
 </div>
-</div>
-</div>
-</div>
-<div id="outline-container-sec-7" class="outline-2">
-<h2 id="sec-7"><span class="todo TODO">TODO</span> H&amp;Z ch4 二维投影变换</h2>
-<div class="outline-text-2" id="text-7">
+</li></ul>
+</li></ul>
+</li>
+<li><a id="sec-7" name="sec-7"></a><span class="todo TODO">TODO</span> H&amp;Z ch4 二维投影变换<br  /><div class="outline-text-2" id="text-7">
 <p>
 这一章主要考虑的问题有：
 </p>
@@ -601,49 +528,25 @@ $$\cal T=\begin{pmatrix}
 </ul>
 </div>
 
-<div id="outline-container-sec-7-1" class="outline-3">
-<h3 id="sec-7-1">直接线性变换算法</h3>
-<div class="outline-text-3" id="text-7-1">
+<ul class="org-ul"><li><a id="sec-7-1" name="sec-7-1"></a>直接线性变换算法<br  /><div class="outline-text-3" id="text-7-1">
 <p>
 这里介绍的是如何在给出4对对应点的情况下计算变换矩阵 \(H\) 。
 </p>
 </div>
-</div>
-</div>
+</li></ul>
+</li>
 
-<div id="outline-container-sec-8" class="outline-2">
-<h2 id="sec-8"><span class="todo TODO">TODO</span> H&amp;Z ch9 极线几何与基础矩阵</h2>
-</div>
-<div id="outline-container-sec-9" class="outline-2">
-<h2 id="sec-9"><span class="todo TODO">TODO</span> H&amp;Z ch11</h2>
-</div>
-<div id="outline-container-sec-10" class="outline-2">
-<h2 id="sec-10"><span class="todo TODO">TODO</span> H&amp;Z ch10</h2>
-</div>
-<div id="outline-container-sec-11" class="outline-2">
-<h2 id="sec-11"><span class="todo TODO">TODO</span> F&amp;P ch10</h2>
-</div>
-<div id="outline-container-sec-12" class="outline-2">
-<h2 id="sec-12"><span class="todo TODO">TODO</span> H&amp;Z ch6</h2>
-</div>
-<div id="outline-container-sec-13" class="outline-2">
-<h2 id="sec-13"><span class="todo TODO">TODO</span> H&amp;Z ch10</h2>
-</div>
-<div id="outline-container-sec-14" class="outline-2">
-<h2 id="sec-14"><span class="todo TODO">TODO</span> F&amp;P ch10</h2>
-</div>
-<div id="outline-container-sec-15" class="outline-2">
-<h2 id="sec-15"><span class="todo TODO">TODO</span> F&amp;P ch14.2</h2>
-</div>
-<div id="outline-container-sec-16" class="outline-2">
-<h2 id="sec-16"><span class="todo TODO">TODO</span> F&amp;P ch14.4</h2>
-</div>
-<div id="outline-container-sec-17" class="outline-2">
-<h2 id="sec-17"><span class="todo TODO">TODO</span> Szeliski ch8.4,8.5</h2>
-</div>
-<div id="outline-container-sec-18" class="outline-2">
-<h2 id="sec-18">Some Problem</h2>
-<div class="outline-text-2" id="text-18">
+<li><a id="sec-8" name="sec-8"></a><span class="todo TODO">TODO</span> H&amp;Z ch9 极线几何与基础矩阵<br  /></li>
+<li><a id="sec-9" name="sec-9"></a><span class="todo TODO">TODO</span> H&amp;Z ch11<br  /></li>
+<li><a id="sec-10" name="sec-10"></a><span class="todo TODO">TODO</span> H&amp;Z ch10<br  /></li>
+<li><a id="sec-11" name="sec-11"></a><span class="todo TODO">TODO</span> F&amp;P ch10<br  /></li>
+<li><a id="sec-12" name="sec-12"></a><span class="todo TODO">TODO</span> H&amp;Z ch6<br  /></li>
+<li><a id="sec-13" name="sec-13"></a><span class="todo TODO">TODO</span> H&amp;Z ch10<br  /></li>
+<li><a id="sec-14" name="sec-14"></a><span class="todo TODO">TODO</span> F&amp;P ch10<br  /></li>
+<li><a id="sec-15" name="sec-15"></a><span class="todo TODO">TODO</span> F&amp;P ch14.2<br  /></li>
+<li><a id="sec-16" name="sec-16"></a><span class="todo TODO">TODO</span> F&amp;P ch14.4<br  /></li>
+<li><a id="sec-17" name="sec-17"></a><span class="todo TODO">TODO</span> Szeliski ch8.4,8.5<br  /></li>
+<li><a id="sec-18" name="sec-18"></a>Some Problem<br  /><div class="outline-text-2" id="text-18">
 <ul class="org-ul">
 <li>Laplacian of Gaussian 是检测边缘和斑点都可以吗。
 </li>
@@ -653,12 +556,10 @@ $$\cal T=\begin{pmatrix}
 </li>
 </ul>
 </div>
-<div id="outline-container-sec-18-1" class="outline-3">
-<h3 id="sec-18-1"><span class="todo TODO">TODO</span> 推导vanishing points</h3>
-<div class="outline-text-3" id="text-18-1">
+<ul class="org-ul"><li><a id="sec-18-1" name="sec-18-1"></a><span class="todo TODO">TODO</span> 推导vanishing points<br  /><div class="outline-text-3" id="text-18-1">
 <p>
 也就是在现实中平行线在图片中会交于一点，这个可以从模型中推导出来。
 </p>
 </div>
-</div>
-</div>
+</li></ul>
+</li></ul>

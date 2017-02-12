@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+	<link rel="stylesheet" type="text/css" href="/styles/post.css">
+    <script src="/scripts/jquery-3.1.1.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script type="text/javascript">
+
+    </script>
+	<title>计算机视觉(CS131)</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+		<div id="mytitle">
+    	          <a href="/index.html"><img src="/images/racket.png" height="50" width="50" alt="" /></a>
+                  <a style="font-family:Source Code Pro,Monaco,Courier,Consolas;" href="index.html">(set 'name "oyzh")</a>
+		</div>
+		<a href="https://github.com/oyzh/oyzh.github.io"><img id="forkme" src="/images/fork_me.png"" alt="Fork me on GitHub"></a>
+      </nav>
+     </header>
+	<article>
+	<h1 id="articlename">计算机视觉(CS131)</h1>
+		<ul class="org-ul"><li><a id="sec-1" name="sec-1"></a>分段<br  /><div class="outline-text-2" id="text-1">
+<p>
+One way to think about "segmentation" is Clustering.
+</p>
+
+<p>
+Clustering: group together similar points and represent them with a single token.
+</p>
+
+<p>
+Key Challenges:
+</p>
+<ol class="org-ol">
+<li>What makes two points/images/patches similar?
+</li>
+<li>How do we compute an overall grouping from pairwise similarities?
+</li>
+
+<li>Agglomerative clustering\
+</li>
+</ol>
+<p>
+Start with each point as its own cluster and iteratively merge the closest clusters.
+</p>
+<ul class="org-ul">
+<li>K-means\
+</li>
+</ul>
+<p>
+Iteratively re-assign points to the nearest cluster center.
+</p>
+<ul class="org-ul">
+<li>Mean-shift clustering\
+</li>
+</ul>
+<p>
+Estimate modes of pdf
+</p>
+</div>
+</li>
+
+<li><a id="sec-2" name="sec-2"></a><span class="done DONE">DONE</span> F&amp;P ch7 线性滤波<br  /><ul class="org-ul"><li><a id="sec-2-1" name="sec-2-1"></a>移不变线性系统<br  /><div class="outline-text-3" id="text-2-1">
+<p>
+卷积表示了一大类系统的性质。特别的，大多数图像系统可以高度近似成具有以下三个重要性质：
+</p>
+<ul class="org-ul">
+<li><b>叠加性</b> ：表示为
+</li>
+</ul>
+<p>
+$$R(f+g)=R(f)+R(g)$$
+这意味着，对一组混合激励的响应等于对单个激励响应的和。
+</p>
+<ul class="org-ul">
+<li><b>按比例放缩</b> ：对零输入的响应是零。与叠加性类似，对一个按比例缩放输入的响应等于对输入响应的按比例缩放，也就是说：
+</li>
+</ul>
+<p>
+$$R(kf)=kR(f)$$
+同时具有叠加性和按比例缩放性质的系统，称为 *线性系统*。
+</p>
+<ul class="org-ul">
+<li><b>位移不变性</b> ：在位移不变性系系统中，对转移了位置的激励的响应等于对原激励的响应产生相同的位移。
+</li>
+</ul>
+
+<p>
+一个同时满足线性和移不变性的系统称为 <b>移不变线性系统</b> ，或简称为系统。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-2-1-1" name="sec-2-1-1"></a>离散卷积<br  /><div class="outline-text-4" id="text-2-1-1">
+<p>
+可以看出，作为一个系统，只要知道系统对0位移处的单位响应，就可以得到任何一个输入向量（或矩阵）的响应。响应的形式可以写成脉冲响应与输入的卷积。比如照相机系统，它是一个移不变线性系统，即任何处对光的响应都可以是零点处对同样光强度（频率）响应然后平移，并且满足线性公式。因此，我们只要知道这个系统对单位强度（频率）的光在零点处的响应，那么对于一张图片上任意位置都是不同光强（频率）时也可以通过卷积的方式得到响应。
+</p>
+
+<p>
+一般所谓的卷积模板或核也可以看作一个系统。这时，输入是图片，通过这个系统得到输出。这个系统满足上面定义，因此可以做卷积。
+</p>
+</div>
+</li>
+
+<li><a id="sec-2-1-2" name="sec-2-1-2"></a>连续卷积<br  /><div class="outline-text-4" id="text-2-1-2">
+<p>
+得到对脉冲的响应并做一种积分的方式称为卷积。
+</p>
+</div>
+</li></ul>
+</li>
+<li><a id="sec-2-2" name="sec-2-2"></a>傅里叶变换<br  /><div class="outline-text-3" id="text-2-2">
+<p>
+将基变为一些列正弦函数，把信号表示为无限个正弦函数的无限加权和。这意味着信号的快速变化是明显的，因为它们在新的基中对应于高频正弦项的高幅值。
+</p>
+
+<p>
+傅里叶变换包含一个实部和一个虚部，考虑复函数的幅度和相位，并分别画出，因而分别称为幅度谱和相位谱（以二维的频率u，v为坐标）。图像的幅度谱经常是相似的。这一点看起来是自然现象，而不是定理证明。因此，图像的幅度谱提供的信息相当有限。
+</p>
+</div>
+</li>
+<li><a id="sec-2-3" name="sec-2-3"></a>采样<br  /><div class="outline-text-3" id="text-2-3">
+<p>
+从一个连续函数（比如到达照相机系统的亮光）得到一组离散点上的数值（就像照片中每一个像素值）称为采样。构建一个模型，可以准确地得到采样中丢失了什么样的信息。
+</p>
+
+<p>
+用形式化模型的术语，对一个二维函数（而不是一维函数）进行采样时，得到一个矩阵。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-2-3-1" name="sec-2-3-1"></a>折叠失真<br  /><div class="outline-text-4" id="text-2-3-1">
+<p>
+采样中会有信息的丢失。采样过慢的信号会显示错误的结果，原始信号中的高频空间元素在采样信号中会表现为低频元素——这种效应称为折叠失真。
+</p>
+
+<p>
+采样信号的傅里叶变换：采样信号是原始信号和钉床函数结合的产物。根据卷积定理，两个函数乘积的傅里叶变换是两个函数傅里叶变换的卷积，这意味着采样信号的傅里叶变换等于函数的傅里叶变换同另一个钉床函数傅里叶变换的卷积。
+</p>
+
+<p>
+由于将一个函数同一个位移 \(\delta\) 函数卷积知识位移了这个函数。这意味着采样信号的傅里叶变换是信号的一系列傅里叶变换位移版本的和。
+</p>
+
+<p>
+函数的傅里叶变换后的频率并不是充满整个频率空间，而是有最大值，即原函数有最大频率。比如正弦函数傅里叶变换后就只有一个频率值。用一定频率对函数进行采样后，对采样后的值做傅里叶变换等于对原函数做傅里叶变换并平移。因此只要平移后没有交叠，就可以使用采样傅里叶变化的逆变换来准确得到原信号，这里涉及奈奎斯特定理。这里要证明采样后的傅里叶变换是原函数傅里叶变换的平移。这非常重要。可以通过这个证明奈奎斯特定理，即为什么采样频率要两倍的最高频率才能重建。
+</p>
+</div>
+</li></ul>
+</li>
+<li><a id="sec-2-4" name="sec-2-4"></a><span class="todo TODO">TODO</span> 平滑与重采样<br  /><div class="outline-text-3" id="text-2-4">
+<p>
+根据奈奎斯特定理，不能对一个图像取每k个像素的方法进行压缩。因为只有采样频率为原图像最高频率2倍才能复原。因此，如果将从原图像中去掉高于采样频率的空间频率，这样采样后的图像可以完全得到原图像去掉高频后的图像，这样的图像没有折叠失真，但因为去掉高频，所以会损失细节。这可以通过将原图像的傅里叶变换与二维删函数相乘实现，删函数是低通滤波。也可以让原函数卷积。
+</p>
+
+<p>
+也可以使用高斯函数滤波，因为高斯函数变换到频域时也是高斯函数，它对低频响应大，对高频响应小。因此可以抑制高频分量，减少折叠失真。
+</p>
+
+<p>
+事实上高斯函数不是一个特别好的低通滤波器。
+</p>
+
+<p>
+算法图像的二倍重采样：
+</p>
+<ol class="org-ol">
+<li>对原图像使用低通滤波器（ \(\sigma\) 在1～2个像素之间的高斯函数通常是适合的选择）
+</li>
+<li>产生一个新的图像，边的维度是原始图像的一般：把新图像第i，j个像素的值设置为滤波后图像的第2i，2j个像素。
+</li>
+</ol>
+</div>
+</li></ul>
+</li>
+<li><a id="sec-3" name="sec-3"></a><span class="done DONE">DONE</span> F&amp;P ch8 边缘检测<br  /><div class="outline-text-2" id="text-3">
+<p>
+图像中亮度明显而急剧的变化的点通常称为边缘或边缘点。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-3-1" name="sec-3-1"></a>噪声<br  /><div class="outline-text-3" id="text-3-1">
+<p>
+边缘处理中一个重要的问题就是图像噪声。这是因为边缘检测器是为了响应急剧变化而构造的;噪声使得图像导数有限差分估计变得不可再用。我们用这个观察结果作为研究一般图像中噪声的推动力。
+</p>
+
+<p>
+噪声这个术语通常表示无法获取信息的图像度量或者与图像中所包含的无关信息的图像度量，其余的则都是信号。认为噪声不包含信息的看法是错误的——例如，我们可以通过在一个黑暗的房间中，使用盖上镜头盖的照相机拍一张照片从而获取到该照相机的温度的估计。此外，由于在没有噪声模型的情形下，无法确定噪声的意义，所以，认为噪声是没有模型的看法是错误的。噪声是我们并不需要使用的任何信息，这就是它的全部。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-3-1-1" name="sec-3-1-1"></a>可加性静态高斯噪声<br  /><div class="outline-text-4" id="text-3-1-1">
+<p>
+在可加性静态高斯噪声模型中，每个像素点都相互独立地加入上一个根据同一个高斯概率分布产生的值。几乎所有这种分布的平均值都是零。标准偏差是这种模型的一个参数。这个模型用于描述照相机中的热噪声。对于线性的导数滤波器，高斯噪声的响应均值是零，但是响应的方差急剧上升。
+</p>
+
+<p>
+线性滤波器对可加性静态高斯噪声的响应：假设一个离散线性滤波器 \(\mathcal G\) 作用在一个平均值为 \(\mu\) 、标准偏差为 \(\sigma\) 的可加性静态高斯噪声所构成的噪声图像 \(\mathcal N\) 。滤波器在i，j点的响应为：
+$$R(\mathcal N)_{i,j}=\sum_{u,v}G_{i-u,j-v}N_{u,v}$$
+可以求得对噪声的响应的期望和方差，期望为：
+$$E[R(\mathcal N)]=\mu \sum_{u,v}G_{i-u,j-v}$$
+方差为：
+$$E[\{R(\mathcal N)_{i,j}-E[R(\mathcal N)_{i,j}]\}^2]={\sigma}^2 \sum G_{u,v}^2$$
+通过上面的式子可以看到，对于一般n阶导数滤波器，高斯噪声的响应均值为零，但是响应的方差急剧上升（因为后面是平方）。
+</p>
+</div>
+</li></ul>
+</li>
+<li><a id="sec-3-2" name="sec-3-2"></a>导数估计<br  /><div class="outline-text-3" id="text-3-2">
+<p>
+简单的有限差分滤波器能够对噪声产生强烈的响应，于是使用两个有限差分滤波器（每个方向一个）将是一个求梯度的不好的方法。处理这个问题的方法是对图像平滑后求道（同样也会平滑导数）。在实际中，图像几乎总是被高斯滤波器平滑过的——事实上，有限差分操作是平滑过的。这将讨论为什么平滑是有用的，以及为什么高斯滤波器是一个平滑滤波器的很好选择。
+</p>
+
+<p>
+平滑一个函数，然后求其导数相当于将其与一个平滑的核函数的导数进行卷积。因此只需与高斯函数的导数求卷积，而不必先卷积然后求微分。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-3-2-1" name="sec-3-2-1"></a>为什么平滑是有作用的<br  /><div class="outline-text-4" id="text-3-2-1">
+<p>
+一般来说，任何对我们有意义的变化都将影响一堆像素点。例如，一个物体的轮廓将会导致在图像上一长条链状的像素点有较大的导数值。对于很多噪声模型而言，一些来源于噪声的大的导数值主要是局部事件。这表明平滑一个差分过的图像更倾向与支持那些感兴趣的变化，并且抑制噪声的影响。
+</p>
+
+<p>
+对为什么平滑是有用的，可有另一种解释。假设先平滑一个噪声图像，然后进行微分。首先，噪声的方差会由于平滑核函数而减小，这是因为我们倾向于使用的平滑核函数，且有：
+$$\sum{uv}G_{uv}=1$$
+也就是说：
+$$\sum{uv}G_{uv}^2 \le 1$$
+</p>
+
+<p>
+其次，像素有变得与相邻的像素相似的倾向——如果使用可加性静态高斯噪声来平滑，结果信号的像素值不再是独立的。在某种意义上，这就是平滑的意义所在——平滑是根据器邻近像素值来推断一个像素值的方法。无论如何，如果像素倾向于与邻近的像素相同的话，那么其导数必然也将变小（因为导数表示的就是一个像素与其相邻像素值的差异的大小）。
+</p>
+
+<p>
+另一个途径是根据空间频率来解释。可以知道，可加性静态高斯噪声在各个频率有着相同分布的能量。如果将噪声进行微分，就加重了高频。如果不试图去修正这个情况，则在梯度图中将会由于噪声的影响而产生偶然出现的过大值。使用一个高斯滤波器将抑制这些高频（高斯滤波器类似一个低通滤波器），就好像它对重采样所起的作用一样。
+</p>
+</div>
+</li>
+
+<li><a id="sec-3-2-2" name="sec-3-2-2"></a>为什么使用高斯平滑<br  /><div class="outline-text-4" id="text-3-2-2">
+<ul class="org-ul">
+<li>效率：通过对一个已经频化过的图像进行平滑从而得到深度平滑的图像
+</li>
+<li>中心极限定理：对一个重要的函数族来说，将函数族中任意一个成员不断与自己卷积，最终将生成一个高斯函数。这意味着，如果我们选择一个不同的平滑核函数，并且重复地施加在图像之上，通过卷积的结合律性质，则最终的结果就像我们呢使用了高斯函数来平滑该n图下一样。
+</li>
+<li>高斯函数是可分离的：二维的高斯函数可以分解成两个一维的高斯函数。
+</li>
+</ul>
+</div>
+</li></ul>
+</li>
+
+<li><a id="sec-3-3" name="sec-3-3"></a>对边缘进行检测<br  /><ul class="org-ul"><li><a id="sec-3-3-1" name="sec-3-3-1"></a><span class="todo TODO">TODO</span> 使用拉普拉斯算子在检测边缘<br  /><div class="outline-text-4" id="text-3-3-1">
+<p>
+注意，这里找的是过零点，也就是从负到正或从正到负，而不是直接找零点，因为一阶导数区域为常数时拉普拉斯也是零，但这就不是边缘点。
+</p>
+
+<p>
+这里的LoG和斑点检测中的LoG的区别？
+</p>
+</div>
+</li>
+<li><a id="sec-3-3-2" name="sec-3-3-2"></a>基于梯度的边缘检测器<br  /></li></ul>
+</li></ul>
+</li>
+<li><a id="sec-4" name="sec-4"></a><span class="done DONE">DONE</span> F&amp;P ch15.2.2 镜头的边界检测<br  /><div class="outline-text-2" id="text-4">
+<p>
+较长的视频流是由一系列镜头组成的——镜头指的是基本上显示的是统一物体的较短视频流。一般来说，这些镜头是编辑过程的产物。很少有两镜头在何处衔接的记录。用一些镜头来表示一段视频是很有用的，而每一个镜头又可以用关键帧表示。这种表示可以用于视频的检索或者概括视频内容以便用户进行浏览。
+</p>
+
+<p>
+自动地寻找这些镜头的边界——镜头的边界检测——是简单分割算法的一个重要而可行的应用。镜头边界检测算法必须在视频中找出哪些和上一帧相差很大的帧。检测镜头边界必须考虑到，在给定的镜头内部，物体和背景都可能在视野中移动。一般来说，这种检测采用某种形式的距离度量;如果距离度量大于一个给定阈值，则一个镜头边界被检测到。
+</p>
+<ul class="org-ul">
+<li>帧差分算法：计算视频中两帧对应点之间的差，然后求差的平方和。
+</li>
+<li>基于直方图算法：计算每一帧的色彩直方图，并计算直方图之间的差。
+</li>
+<li>块比较算法：将帧切分成许多小的网格，通过比较这些小的格子来比较两帧。
+</li>
+<li>边缘差分算法：计算每一帧的边缘图，然后比较这些边缘图。
+</li>
+</ul>
+</div>
+</li>
+<li><a id="sec-5" name="sec-5"></a><span class="done DONE">DONE</span> Szeliski ch4.1.1 特征检测器<br  /><div class="outline-text-2" id="text-5">
+<p>
+怎样才能找到能够在其他图像中稳定匹配的图像位置，也就是说，什么是适合跟踪的特征。
+</p>
+
+<p>
+我们在一个晓得位置变化区域 \(\Delta u\) 内，通过与原图像块进行比较来计算这个匹配结果的稳定度，这就是通常所说的“自相关函数”（即Harris中角点检测中的使用的一步）。
+$$E_{AC}(\Delta u)=\sum_iw(x_i)[I_0(x_i+\Delta u)-I_0(x_i)]^2$$
+$$E_{AC}(\Delta u) \approx \Delta u^T A \Delta u$$
+这里A是卷积：
+$$A=w*\left[ \begin{array}\\
+I_x^2&I_xI_y\\
+I_xI_y&I_y^2\\
+\end{array} \right]$$
+对于上式的理解是：先通过算子求得每个点的x方向和y方向的偏导数，可以将右边的矩阵看成是深度为四（或者三，因为 \(I_xI_y\) 有两个）的图像，用加权核w对每个通道进行卷积，也就是每一个点上是一个卷积后的矩阵，这就是自相关矩阵。通过矩阵可以得到一些兴趣点，比如Harris角点。
+下面的算法总结了一个基本的基于自相关矩阵关键点检测的步骤：
+</p>
+<ol class="org-ol">
+<li>通过高斯函数的导数对原始图像进行卷积来计算图像在水平和垂直方向上的导数 \(I_x\) 和 \(I_y\) 。
+</li>
+<li>计算对于于这些梯度外积的三个图像。（因为矩阵是对称的）。
+</li>
+<li>使用一个较大的高斯函数来对这些图像中的每一个进行卷积。
+</li>
+<li>使用判断兴趣点的公式中的任何一个来计算一个标量兴趣量。
+</li>
+<li>寻找一定阈值之上的局部最大值，并将g它们作为检测到的特征点位置。
+</li>
+</ol>
+<p>
+以上算法基于最大化空间稳定性，这种点是通过计算自相关矩阵，并根据矩阵的一些特征来判断点是否稳定。所谓最大化空间稳定性就是指可以最稳定的从变化了之后的图片中检测出来。
+</p>
+</div>
+</li>
+<li><a id="sec-6" name="sec-6"></a><span class="done DONE">DONE</span> F&amp;P ch1-3 摄像机<br  /><div class="outline-text-2" id="text-6">
+<p>
+在第一版是1-3章，第二版综合到了一章。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-6-1" name="sec-6-1"></a>针孔照相机<br  /><ul class="org-ul"><li><a id="sec-6-1-1" name="sec-6-1-1"></a>透视投影<br  /><div class="outline-text-4" id="text-6-1-1">
+<p>
+针孔成像模型简单，假设针孔可以缩小成一个点，那么就只有唯一的一条光线穿过三个点：成像板平面（或称为成像面）上的一个点、针孔以及景物中的某个点。在现实中，针孔（不管多小）总不是无限小，成像平面上的每个点收集的是具有一定角度的锥形光束的光线，因此严格来说理想化的、极其简单的成像几何模型是不成立的。在加上实际的照相机一般都配备有镜头，因此使得事情更加复杂。但是针孔透视投影模型（或称中心透视投影）在数学上是很方便的。
+</p>
+
+<p>
+透视投影产生的的是一幅颠倒的图像，因此有时设想一个虚拟图像会方便一些，这幅图像落在一个处于针孔前面的平面上，它到针孔的距离等于实际成像面到针孔的距离。这幅虚拟图像除了图像是倒立的以外，与实际图像是完全等价的。根据所考虑的情况选择其中任一种会显得更加方便。
+</p>
+
+<p>
+将一个坐标系 \((O,\textbf {i,j,k})\) 附加到一个针孔摄像机上去，它的原点与针孔重合，而向量 \(\textbf i\) 和 \(\textbf j\) 组成一个与图像平面平行的向量的基。
+</p>
+
+<p>
+<i>分析：这里的虚拟图像指的是我们假象的图像，实际并不存在，只是因为它与物体方向相同，而且与图像一样大，所以有利分析。</i>
+</p>
+</div>
+</li>
+
+<li><a id="sec-6-1-2" name="sec-6-1-2"></a>仿射投影<br  /><div class="outline-text-4" id="text-6-1-2">
+<p>
+针孔透视仅仅是成像过程中几何关系的一种近似。这里讨论的是一种更加粗略的近似，称为仿射投影模型，它在某些情况下也是有用的。我们的注意力集中在两种特定的仿射模型——弱透视和正交投影上，第三种称为类透视模型是以后讨论。
+</p>
+
+<p>
+放大律：朝镜头前的平行的平面上任意的线段在图像上的长度为本来长度的m倍，这个m就是放大律。
+</p>
+
+<p>
+当景物深度与它们到摄像机的平均距离相比很小时，放大律可以看做是一个常数，这种投影模型称为 <b>弱透视投影</b> 或 <b>按比例投影</b> 。如果预先知道摄像机到景物的距离大体保持常数，则可以进一步将图像坐标归一化使m=-1.这就是正交投影。尽管弱透视投影在很多成像条件下是可以接受的，但假设纯正正交投影通常是不现实的。
+</p>
+</div>
+</li>
+
+<li><a id="sec-6-1-3" name="sec-6-1-3"></a>无镜头成像模型总结<br  /><div class="outline-text-4" id="text-6-1-3">
+<p>
+这里对没有镜头的摄像机的成像模型进行总结，直接的小孔成像投影是有深度的，而仿射投影假设景物在一个平行的平面上，因此条件是景物深度与它们到摄像机的平均距离相比很小，这样的好处是处理更简单，因为直接有一个放大系数可以使用。
+</p>
+</div>
+</li></ul>
+</li>
+
+<li><a id="sec-6-2" name="sec-6-2"></a>带镜头的摄像机<br  /><div class="outline-text-3" id="text-6-2">
+<p>
+大部分摄像机都配备有镜头。使用镜头主要有两个理由：第一个理由是收集光线，因为理想的针孔模型中，一条管线投影到图像平面的一个点。当然，实际的针孔是有尺寸的，所以图像平面中每一个点是由一定角度范围射过来的锥形光束照亮的。针孔的尺寸越大，这个锥形光束越宽，因此图像也越明亮，但是大的尺寸的针孔导致图像模糊。缩小针孔能使图像锐化，但减少了到达图像平面光的总量，并且可能产生衍射现象。使用镜头的第二个理由是能保持图像锐化聚焦，同时又可以较大面积中收集光线。
+</p>
+
+<p>
+也就是如果用小孔只能接受直接到达的光，景物中某一点可以发出很多的光线，但是只有一点能到达图像正确点上。而如果使用镜头，那么同一点上发出的不同方向的光线可以聚集于一点，使的这一点收集到的光量得到增强，同时也不会产生模糊。
+</p>
+
+<p>
+这一章非常重要，以下没有列出来，只有一些没有的推导。
+</p>
+</div>
+<ul class="org-ul"><li><a id="sec-6-2-1" name="sec-6-2-1"></a>近轴几何学<br  /><div class="outline-text-4" id="text-6-2-1">
+<p>
+这里假设折射表面是圆形。考虑近轴（或一阶）几何光学的情况，也就是说，所有进入镜头的光线之间与镜头折射表面法线之间的夹角相对较小。当然，实际的镜头至少有两个折射表面为界。光线的路径可以使用近轴折射方程迭代构造。
+</p>
+</div>
+</li>
+<li><a id="sec-6-2-2" name="sec-6-2-2"></a>薄透镜<br  /><div class="outline-text-4" id="text-6-2-2">
+<p>
+这里考虑透镜具有两个半径为R的球形表面，折射系数为n的情况。假设镜头处在真空中，折射系数为1,是薄透镜（也就是说进入透镜的光线从右边边界折射后立即又在左边界上再次折射）。
+</p>
+
+<p>
+从无穷远射过来的线可以看成是近轴几何中的情况，即相当于从轴上无穷远的点上射过来的光线。在近轴几何中 \(d_1\) 与 \(d_2\) 之间的关系取决于R、 \(n_1\) 与 \(n_2\) ，因此我们可以知道，入射光线为无穷远，可以求得焦距 \(f\) （焦距定义为平行线的相交点的距离）。注意近轴集合中几个值是可以为负数.
+</p>
+
+<p>
+焦距公式推导：
+$${\frac 1 \infty}+{\frac n {d_2}}=\frac {n-1} R$$
+$${\frac 1 f}+{\frac n {-d_2}}=\frac {n-1} R$$
+两式相加：
+$$\frac 1 f = \frac{2(n-1)} R$$
+$$f=\frac R {2(n-1)}$$
+薄透镜的公式推导：
+设透镜最上面那个点和下面那个点为 \(A\) 和 \(B\) 
+$$\triangle AF'O \simeq \triangle AP'B$$
+$$\triangle BFO \simeq \triangle BPA$$
+$$\frac f {-z} =\frac {OB} {BA}$$
+$$\frac f {z'} =\frac {AO} {AB}$$
+$$\frac {OB} {BA}+\frac {AO} {AB}=1$$
+$$\frac f {-z} + \frac f {z'}=1$$
+$$\frac 1 {z'}-\frac 1 z=\frac 1 f$$
+</p>
+</div>
+</li>
+<li><a id="sec-6-2-3" name="sec-6-2-3"></a>实际透镜<br  /><div class="outline-text-4" id="text-6-2-3">
+<p>
+更为实际的简单光学系统是厚透镜。描述厚透镜性能的方程式很容易从近轴折射方程式导出。注意，这种情况下，唯一没有发生折射的光线是沿着光轴的光线。
+</p>
+
+<p>
+简单透镜会产生若干种像差。这是因为近轴公式是在光线与透镜之间夹角很小才有效，也就是近轴时光线才据于一点。当角度变大时就不能用这个模型，也就是从一个点射出来的光线在透镜后面不聚集于一点。这就产生像差。
+</p>
+</div>
+</li></ul>
+</li>
+
+<li><a id="sec-6-3" name="sec-6-3"></a>摄像机的几何模型<br  /><div class="outline-text-3" id="text-6-3">
+<p>
+建立图像坐标与世界坐标之间的关系。首先回忆一下欧几里德解析几何的基本公式，然后将引入一些参数（内参数和外参数）表示图像坐标系与世界坐标系之间的联系，并推出通用的透视投影公式。最后还将推出仿射模型的简洁表达，仿射模型是远距离物体针孔成像的一种近似。
+</p>
+</div>
+
+<ul class="org-ul"><li><a id="sec-6-3-1" name="sec-6-3-1"></a>坐标系变换和刚体运动<br  /><div class="outline-text-4" id="text-6-3-1">
+<p>
+同时考虑多个坐标系，并能得到它们之间的变换方式。如何描述两个坐标系的变化？在坐标系A中的点在坐标系B中坐标是多少？这些问题都可以得到回答。
+</p>
+
+<p>
+重要概念：齐次坐标系，旋转矩阵，旋转矩阵的特点，刚体变换。
+</p>
+
+<p>
+齐次坐标不仅可以表示平面和直线，还能表达更复杂的形状。通用的二次曲线可以写成下面形式：
+$${\textbf P}^T \cal Q \textbf P = 0$$
+这个方程中， \(\textbf P\) 是点P的齐次坐标。 \(\cal Q\) 是一个4×4的对称矩阵。
+</p>
+
+<p>
+当考虑两个坐标系时，在一个坐标系中的点在另一个坐标系中是多少？其中已知两个坐标系的关系，也就是经过平移和旋转。平移，旋转矩阵，若两个坐标系的原点和基向量都是不同的，我们称这两个坐标系之间是一般的刚体变换，且有：
+$$^{\textbf B}\textbf P=_{\textbf A}^{\textbf B}\cal R^{\textbf A}\textbf P+^{\textbf B}{\textbf O}_{\textbf A}$$
+采用齐次左边可以消除加运算。而是用4×4的矩阵乘。
+</p>
+
+<p>
+描述两个坐标系之间变化的矩阵是把第一个坐标系映射到第二个坐标系的矩阵和它的逆。弱旋转矩阵被任意一个非奇异3×3矩阵替换，情况会怎样呢？这是方程仍然表示点到点的映射（和坐标系间的坐标变换），但是长度和角度不再是不变的（新的坐标系不一定能保证坐标轴长度为1且正交）。我们称这个4×4矩阵
+$$\cal T=\begin{pmatrix}
+\cal A & \textbf t\\
+0^T & 1
+\end{pmatrix}$$
+是一个 <b>仿射变换</b> ，若 \(\cal T\) 是非奇异的任意4×4矩阵，我们称其为 <b>投影变换</b> 。仿射变换和投影变换都构成群。
+</p>
+</div>
+</li>
+
+<li><a id="sec-6-3-2" name="sec-6-3-2"></a><span class="todo TODO">TODO</span> 摄像机参数和透视投影<br  /><div class="outline-text-4" id="text-6-3-2">
+<p>
+还有具体的推导没有做。
+</p>
+
+<p>
+用一些物理参数表示摄像机坐标与世界坐标系的关系，包括焦距、像素大小、主点的位置、摄像机的位置和方向。
+</p>
+
+<p>
+对于透镜成像，只有当摄像机的焦距、物体深度和成像平面到光心的距离三者满足薄透镜方程时，才能呈现清楚的像。
+</p>
+
+<p>
+内参数:我们可以为摄像机建立一个归一化图像平面，这个平面平行于摄像机的物理成像平面，且到针孔的距离为单位长度，我们可以通过一些参数，写出物理摄像机坐标系和归一化的图像坐标系之间的关系。
+</p>
+</div>
+</li>
+<li><a id="sec-6-3-3" name="sec-6-3-3"></a><span class="todo TODO">TODO</span> 摄像机的几何标定<br  /><div class="outline-text-4" id="text-6-3-3">
+<p>
+推导没有做。
+</p>
+
+<p>
+摄像机内外参数估计问题（称为几何标定）。摄像机标定后，对每一个成像点都可以确定从光心射出来且经过这个点的一条射线，也可以从图像得到精确的三维测量。
+使用线性方法进行摄像机标定：假设从图像中取了n个特征点，这些点的齐次坐标是已知的。标定过程分为两步：1.计算这个坐标系下摄像机的投影矩阵;2.从投影矩阵估计摄像机内外参数。投影矩阵共有11个独立无关的变量，每一个点和它的投影点可以产生一个线性约束关系。当n&gt;11时，方程一般是没有解的，但是可以在最小二乘的意义上找到解。
+1.估计投影矩阵（多个对应点）。
+2.估计内外参数（投影矩阵可以用摄像机的内外参数表示，因此在得到投影矩阵后，可以恢复这些参数）。
+</p>
+
+<p>
+特征点的一些退化问题可能会引起标定失败。
+</p>
+
+<p>
+径向畸变：由于目标点偏离光轴而引起的畸变。
+</p>
+
+<p>
+应用：机器人定位
+摄像头固定在地面上某个位置，然后通过标记点的形式标定摄像机。在标定了点之后，就可以通过在照片中检测出机器人的位置（图像坐标中），并通过得到变换矩阵计算它在世界坐标中的位置。具体步骤：
+</p>
+<ol class="org-ol">
+<li>标定摄像机（几何标定）。
+</li>
+<li>检测在图片中的位置。
+</li>
+<li>逆变换得到它在世界坐标中的位置。
+</li>
+</ol>
+</div>
+</li>
+<li><a id="sec-6-3-4" name="sec-6-3-4"></a>总结<br  /><div class="outline-text-4" id="text-6-3-4">
+<p>
+这一章介绍了摄像机的模型，即通过一些参数来描述，它联系了摄像机与外部的世界。并且介绍了得到这些参数的方法。有了这些知识，就可以贯通现实世界与图片，使它们之间有了一个很好的数学模型。
+</p>
+</div>
+</li></ul>
+</li></ul>
+</li>
+<li><a id="sec-7" name="sec-7"></a><span class="todo TODO">TODO</span> H&amp;Z ch4 二维投影变换<br  /><div class="outline-text-2" id="text-7">
+<p>
+这一章主要考虑的问题有：
+</p>
+<ol class="org-ol">
+<li>2D单映射 两幅图像中对应点的映射
+</li>
+<li>3D到2D的投影 三维空间中的点投影到二维平面
+</li>
+<li>基础矩阵的计算 如何通过不同视角的两张图片中对应的点集计算基础矩阵，这是一个3×3的奇异矩阵，并且对于对应点满足 \(x_i^{'T}Fx_i=0\) 
+</li>
+<li>3焦点张量的计算 给出三幅图的对应点集计算3焦点张量
+</li>
+</ol>
+
+<p>
+我们的问题是计算一个三维矩阵 \(H\) ，对于两幅图中的对应点有： \(Hx_i=x_i^'\) 。
+</p>
+<ul class="org-ul">
+<li>至少需要多少个点对来计算矩阵
+</li>
+<li>如何计算最优解
+</li>
+<li>Gold Standard algorithm
+</li>
+</ul>
+</div>
+
+<ul class="org-ul"><li><a id="sec-7-1" name="sec-7-1"></a>直接线性变换算法<br  /><div class="outline-text-3" id="text-7-1">
+<p>
+这里介绍的是如何在给出4对对应点的情况下计算变换矩阵 \(H\) 。
+</p>
+</div>
+</li></ul>
+</li>
+
+<li><a id="sec-8" name="sec-8"></a><span class="todo TODO">TODO</span> H&amp;Z ch9 极线几何与基础矩阵<br  /></li>
+<li><a id="sec-9" name="sec-9"></a><span class="todo TODO">TODO</span> H&amp;Z ch11<br  /></li>
+<li><a id="sec-10" name="sec-10"></a><span class="todo TODO">TODO</span> H&amp;Z ch10<br  /></li>
+<li><a id="sec-11" name="sec-11"></a><span class="todo TODO">TODO</span> F&amp;P ch10<br  /></li>
+<li><a id="sec-12" name="sec-12"></a><span class="todo TODO">TODO</span> H&amp;Z ch6<br  /></li>
+<li><a id="sec-13" name="sec-13"></a><span class="todo TODO">TODO</span> H&amp;Z ch10<br  /></li>
+<li><a id="sec-14" name="sec-14"></a><span class="todo TODO">TODO</span> F&amp;P ch10<br  /></li>
+<li><a id="sec-15" name="sec-15"></a><span class="todo TODO">TODO</span> F&amp;P ch14.2<br  /></li>
+<li><a id="sec-16" name="sec-16"></a><span class="todo TODO">TODO</span> F&amp;P ch14.4<br  /></li>
+<li><a id="sec-17" name="sec-17"></a><span class="todo TODO">TODO</span> Szeliski ch8.4,8.5<br  /></li>
+<li><a id="sec-18" name="sec-18"></a>Some Problem<br  /><div class="outline-text-2" id="text-18">
+<ul class="org-ul">
+<li>Laplacian of Gaussian 是检测边缘和斑点都可以吗。
+</li>
+<li>为什么在兴趣点检测中用高斯加权就可以得到旋转不变的兴趣点，而一般的矩形不行（Harri角点）。
+</li>
+<li>SIFT中怎样使用通用霍夫变换。
+</li>
+</ul>
+</div>
+<ul class="org-ul"><li><a id="sec-18-1" name="sec-18-1"></a><span class="todo TODO">TODO</span> 推导vanishing points<br  /><div class="outline-text-3" id="text-18-1">
+<p>
+也就是在现实中平行线在图片中会交于一点，这个可以从模型中推导出来。
+</p>
+</div>
+</li></ul>
+</li></ul>
+
+
+<!-- LiveRe City install code -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC8yNjk2NC8zNTUx">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>Please activate JavaScript for write a comment in LiveRe</noscript>
+</div>
+<!-- completed City install code -->
+
+	</article>
+
+
+	<footer>
+	Copyright &#x000A9;&nbsp;2016 &#x000B7 <a href="/index.html">oyzh</a>
+	</footer>
+  </body>
+	<script>$("pre").wrapInner("<code></code>");</script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+	<script>
+		hljs.initHighlightingOnLoad();
+	</script>
+</html>

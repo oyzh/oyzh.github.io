@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/default.min.css">
+	<link rel="stylesheet" type="text/css" href="/styles/post.css">
+    <script src="/scripts/jquery-3.1.1.js" type="text/javascript"></script>
+	<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script type="text/javascript">
+
+    </script>
+	<title>HOG特征原理</title>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+		<div id="mytitle">
+    	          <a href="/index.html"><img src="/images/racket.png" height="50" width="50" alt="" /></a>
+                  <a style="font-family:Source Code Pro,Monaco,Courier,Consolas;" href="index.html">(set 'name "oyzh")</a>
+		</div>
+		<a href="https://github.com/oyzh/oyzh.github.io"><img id="forkme" src="/images/fork_me.png"" alt="Fork me on GitHub"></a>
+      </nav>
+     </header>
+	<article>
+	<h1 id="articlename">HOG特征原理</h1>
+		<ol class="org-ol"><li><a id="sec-1" name="sec-1"></a>原理<br  /><div class="outline-text-2" id="text-1">
+<p>
+局部对象的appearance和shape可以通过局部梯度强度或边缘方向来描述，即使不知道相应的梯度或边缘位置的精确知识。
+</p>
+</div>
+</li>
+<li><a id="sec-2" name="sec-2"></a>实现<br  /><div class="outline-text-2" id="text-2">
+<p>
+RGB colour space with no gamma correction; [−1, 0, 1] gradient filter with no smoothing; linear gradient voting into 9 orientation bins in 0◦–180◦; 16×16 pixel blocks of four 8×8 pixel cells; Gaussian spatial window with σ = 8 pixel; L2-Hys (Lowe-style clipped L2 norm) block normalization; block spacing stride of 8 pixels (hence 4-fold coverage of each cell); 64×128 detection window; linear SVM classifier.
+</p>
+</div>
+</li>
+<li><a id="sec-3" name="sec-3"></a>理解<br  /><div class="outline-text-2" id="text-3">
+<ol class="org-ol">
+<li>HOG特征是一张图片生成一个特征向量，而不像SIFT是一个特征点生成一个特征向量。因此训练图片需要是一样大，比如论文中的64×128。这样生成的向量才一样长。在准备训练数据时，需要先将行人的框出来，再将图片resize成一样大小。
+</li>
+<li>在对一张图片进行行人检测时，由于不知道行人的大小，所以需要大小改变的滑动窗口来检测，每一张截取出来的图片需要resize成64×128（或者根据训练是的大小改变），以生成和训练时一样长的向量。
+</li>
+<li>用训练得到的分类器来分类新的向量。
+</li>
+<li>对图片的全局的描述是有效的需要一个前提就是图片中物体是突出的，或者说是主体，这样得到的向量才有意义，因此才会使用手工来截取行人的图片。
+</li>
+</ol>
+</div>
+</li></ol>
+
+
+<!-- LiveRe City install code -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC8yNjk2NC8zNTUx">
+<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+</script>
+<noscript>Please activate JavaScript for write a comment in LiveRe</noscript>
+</div>
+<!-- completed City install code -->
+
+	</article>
+
+
+	<footer>
+	Copyright &#x000A9;&nbsp;2016 &#x000B7 <a href="/index.html">oyzh</a>
+	</footer>
+  </body>
+	<script>$("pre").wrapInner("<code></code>");</script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+	<script>
+		hljs.initHighlightingOnLoad();
+	</script>
+</html>

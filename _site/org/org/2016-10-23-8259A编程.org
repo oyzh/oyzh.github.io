@@ -1,0 +1,142 @@
+#+BEGIN_HTML
+---
+layout: post
+title: 8259A编程
+excerpt: 操作系统的中断处理和8259A的编程
+---
+#+END_HTML
+#+OPTIONS: toc:nil
+#+OPTIONS: ^:{}
+
+* PIC(Programmable Interrupt Controller)
+  8259A芯片是可编程的中断控制器,CPU与外设之间的交互有多种方式,对于想硬盘,鼠标,键盘等都采用中断方式.如图1所示,CPU通过总线
+  与RAM,ROM,PIC和I/O等进行通信,但是由于I/O处理时间的问题,CPU不能确定什么时候需要处理I/O,过去可能使用轮巡(polled)方式,但
+  这比较浪费CPU时间,中断方式指的是当I/O准备好后向CPU发出中断,CPU根据中断信息来处理相应I/O.
+
+  I/O向CPU发出中断需要经过一个中间过程,即向PIC芯片发送中断请求,再由PIC向CPU发送请求.通过向PIC编程可以让CPU知道得到某个中断
+  号时是那个I/O发出来的.
+
+  图中显示,所有I/O都有向PIC的输出信号,PIC再向CPU输出中断.
+
+  #+CAPTIONS: 中断模式
+  [[/images/interrupt.png]]
+
+* 操作系统处理中断
+  CPU中有一个专用寄存器保存中断向量表的地址,这样根据中断号可以找到中断向量,中断向量中保存着中断处理程序的地址,可以直接运行.
+
+  在操作系统中要初始化一个I/O要做以下几步:
+  1. 对I/O编程使它按要求向8259A发出中断信号
+  2. 配置8259A使它接收这个I/O的中断信号,并向CPU发出这个号码的中断
+  3. 完成改I/O的中断处理程序
+  4. 设置中断向量表中相应的位置,使它指向中断处理程序
+
+  对于一个I/O设备,操作系统对它的抽象包括打开,读数据,写数据等,因此除了完成中断相关的初始化,还要完成读写数据等驱动函数,
+  这些函数可能会sleep等待I/O发出中断表示准备好数据.
+
+* 8259A编程
+  CPU向8259A发送指令以进行对8259A的初始化.8259A中有两组寄存器,一组是命令寄存器(initialization command words ICW1~ICW4),用于存放CPU
+  写入的初始化命令字,使用过程中不改变,另一组(operation command words OCW1~OCW3)是操作命令字,是运行过程中控制8259A的寄存器.
+
+  以下例子来源[[https://pdos.csail.mit.edu/6.828/2016/schedule.html][xv6]]:
+
+  #+BEGIN_SRC
+  // Intel 8259A programmable interrupt controllers.
+
+#include "types.h"
+#include "x86.h"
+#include "traps.h"
+
+// I/O Addresses of the two programmable interrupt controllers
+#define IO_PIC1         0x20    // Master (IRQs 0-7) 主8259A的I/O地址
+#define IO_PIC2         0xA0    // Slave (IRQs 8-15) 从8259A的I/O地址
+
+// 从8259A连在主PIC的2
+#define IRQ_SLAVE       2       // IRQ at which slave connects to master
+
+// Current IRQ mask.
+// Initial IRQ mask has interrupt 2 enabled (for slave 8259A).
+// 中断屏蔽(1)/开启(0),一共16个,所以2个字节
+static ushort irqmask = 0xFFFF & ~(1<<IRQ_SLAVE);
+
+static void
+picsetmask(ushort mask)
+{
+  irqmask = mask;
+  outb(IO_PIC1+1, mask); // outb是输出低字节到地址,这里是主8259A
+  outb(IO_PIC2+1, mask >> 8);
+}
+
+void
+picenable(int irq)
+{
+// 当某个外设想要中断时,它会调用这个函数,并将自己的中断号传递进来
+// 该函数将对应位置为0表示开启这个位置的中断
+  picsetmask(irqmask & ~(1<<irq));
+}
+
+// Initialize the 8259A interrupt controllers.
+void
+picinit(void)
+{
+  // mask all interrupts屏蔽所有中断
+  outb(IO_PIC1+1, 0xFF);
+  outb(IO_PIC2+1, 0xFF);
+
+  // Set up master (8259A-1)
+
+  // ICW1:  0001g0hi
+  //    g:  0 = edge triggering, 1 = level triggering
+  //    h:  0 = cascaded PICs, 1 = master only
+  //    i:  0 = no ICW4, 1 = ICW4 required
+  outb(IO_PIC1, 0x11); // 0x11表示边缘触发,级联PIC以及使用ICW4
+
+  // ICW2:  Vector offset
+  outb(IO_PIC1+1, T_IRQ0); // 向CPU提交的向量号要加上这个偏移
+
+  // ICW3:  (master PIC) bit mask of IR lines connected to slaves
+  //        (slave PIC) 3-bit # of slave's connection to master
+  outb(IO_PIC1+1, 1<<IRQ_SLAVE); // 连接从片
+
+  // ICW4:  000nbmap
+  //    n:  1 = special fully nested mode
+  //    b:  1 = buffered mode
+  //    m:  0 = slave PIC, 1 = master PIC
+  //      (ignored when b is 0, as the master/slave role
+  //      can be hardwired).
+  //    a:  1 = Automatic EOI mode
+  //    p:  0 = MCS-80/85 mode, 1 = intel x86 mode
+  outb(IO_PIC1+1, 0x3);
+
+  // Set up slave (8259A-2)
+  outb(IO_PIC2, 0x11);                  // ICW1
+  outb(IO_PIC2+1, T_IRQ0 + 8);      // ICW2
+  outb(IO_PIC2+1, IRQ_SLAVE);           // ICW3
+  // NB Automatic EOI mode doesn't tend to work on the slave.
+  // Linux source code says it's "to be investigated".
+  outb(IO_PIC2+1, 0x3);                 // ICW4
+
+  // OCW3:  0ef01prs
+  //   ef:  0x = NOP, 10 = clear specific mask, 11 = set specific mask
+  //    p:  0 = no polling, 1 = polling mode
+  //   rs:  0x = NOP, 10 = read IRR, 11 = read ISR
+  outb(IO_PIC1, 0x68);             // clear specific mask
+  outb(IO_PIC1, 0x0a);             // read IRR by default
+
+  outb(IO_PIC2, 0x68);             // OCW3
+  outb(IO_PIC2, 0x0a);             // OCW3
+
+  if(irqmask != 0xFFFF)
+    picsetmask(irqmask);
+}
+
+//PAGEBREAK!
+// Blank page.
+  #+END_SRC
+
+* 其他
+  对于多核CPU,现在采用隔离的设计,分别为IOAPIC和LAPIC,分别是片外和片内的编程.
+
+* 参考资料
+1. [[http://bochs.sourceforge.net/techspec/PORTS.LST][Intel I/O port]]
+2. [[https://pdos.csail.mit.edu/6.828/2010/readings/hardware/8259A.pdf][8259A官方文档]]
+3. [[http://www.tyut.edu.cn/kecheng1/2008/site04/courseware/chapter6/6.3.3.html][中文资料]]

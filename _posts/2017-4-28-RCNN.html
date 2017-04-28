@@ -1,0 +1,107 @@
+---
+layout: post
+title: R-CNN 系列
+excerpt: R-CNN,Fast R-CNN, Faster R-CNN,Detection.
+---
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+R-CNN系列是基于region proposal的一系列物体检测的方法.连续的三个方法是逐渐改进和统一的过程.R-CNN包括了(1).单独的Region Proposal.(2).Fine-tune网络.(3).训练SVM和bounding box回归,Fast-RCNN不用再单独训练SVM,而是直接使用Fine-tune结果.并用一个ROI层来减少运算,Faster RCNN则将region proposal也加入网络,并用多任务来训练网络.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> R-CNN</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+R-CNN主要解决的是如何用卷积神经网络做物体检测.主要思想比较简单,首先提取出可能包含物体的窗口,这一步用Region Proposal实现.然后用分类网络(AlexNet,VGG&#x2026;)对这些窗口进行分类判别.几个细节:
+</p>
+<ol class="org-ol">
+<li>候选窗口大小不一样,需要经过调整,有多种调整方法,这里采用最简单的(anisotropic image scaling).
+</li>
+<li>Transfer Learning. 对已经用大量数据训练好的分类网络(VGG)进行Fine-tune,让它适应新的数据集.
+</li>
+<li>Fine-Tune时最后一层用softmax.
+</li>
+<li>测试时比较容易理解.即将候选窗口调整并输入网络.训练数据产生有一定技巧.在训练图片中用region proposal提取大量候选窗口,与ground trues覆盖一定比例(0.5)的作为正样本,而且还要根据覆盖比例对对应标签的概率进行修改.
+</li>
+<li>虽然softmax可以直接概率输出(后面的Fast和Faster直接用softmax),但这里还用最后一层全连接作为特征训练了一个SVM,论文上说效果更好,但是接下来的论文没有用这个策略.
+</li>
+<li>还有一个是训练窗口回归器,因为region proposal的窗口和ground tures可能不一样(应该很难一样:)&#x2026;).
+</li>
+</ol>
+
+<div class="figure">
+<p><img src="./R-CNN.png" alt="R-CNN.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="./RCNN-t.png" alt="RCNN-t.png" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Fast RCNN</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+R-CNN每一个区域都要计算,如果有覆盖的化就重复了,Fast-RCNN通过一步ROI pooling layer减少了这一步计算复.而且还采用Multi-task loss来统一输出和窗口回归训练,不用再训练SVM.
+</p>
+<ol class="org-ol">
+<li>ROI pooling将大小不同的feature map采样层大小一样的区域(不同大小的region proposal).
+</li>
+<li>不对每一个region单独送入网络,只在最后一个卷积feature map上处理.
+</li>
+<li>多任务指网络有多个输出,统一训练是指总的loss是多个loss的加权和:
+$$L = L_{cls}+\lambda L_{loc}$$ 其中 \(L_{cls}\) 是分类loss, \(L_{loc}\) 是回归loss.
+</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="./Fast-RCNN.png" alt="Fast-RCNN.png" />
+</p>
+</div>
+
+<p>
+<a href="./Fast-Rcnn-t.png
+">./Fast-Rcnn-t.png
+</a>
+</p>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Faster RCNN</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+对于RCNN和Fast RCNN来说,region proposal都是分离的一步.Faster RCNN用同一个网络实现region proposal和detection.整理网络和Fast RCNN一样,但是又多加了2个任务(原来是两个任务),region proposal和region proposal的框口回归.
+</p>
+<ol class="org-ol">
+<li>region proposal可以看成在最后一个feature map上判断窗口是不是region.将图片中每一个位置作为一个anchor,以它为中心判断k个框口是否是region.并设计一个框口回归器.
+</li>
+<li>Faster RCNN的训练是分步进行的(如图),分别训练后固定卷积层再联合训练.(刚开始region proposal比较差,这时候训练detection不合适).
+</li>
+</ol>
+
+
+<div class="figure">
+<p><img src="./Faster-RCNN.png" alt="Faster-RCNN.png" />
+</p>
+</div>
+
+
+<div class="figure">
+<p><img src="./Faster-Rcnn-t.png" alt="Faster-Rcnn-t.png" />
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Reference</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+</div>

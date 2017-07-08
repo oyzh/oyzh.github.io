@@ -1,0 +1,173 @@
+---
+layout: post
+title: 时间复杂度计算
+excerpt: 递归函数的计算,用于程序的时间复杂度分析(算法导论第一部分)
+---
+
+<ol class="org-ol"><li><a id="sec-1" name="sec-1"></a>时间复杂度<br  /><div class="outline-text-2" id="text-1">
+<p>
+  假设输入问题的规模为 \(n\) ,定义时间复杂为 \(T(n)\) ,时间复杂度是关于输入规模的函数, 非递归定义的函数比较好估计,递归定义的函数需要技巧来估计. 常见的比如快排,归并排序等的时间函数都是递归定义的.
+比如归并排序,当$n=1$时,\(T(n)=c\),当$n&gt;1$时,\(T(n) = T(\lceil n/2 \rceil) + T(\lfloor n/2 \rfloor) + cn\).
+</p>
+
+<p>
+我们研究的是算法的 <b>渐近</b> 效率,即不用求的精确的\(T(n)\),只需得到它的一个增长量级.运行时间是$n$的函数,我们可以定义
+函数集合来使我们的时间函数属于某个函数集合.某个函数集合反映了一类时间复杂度,比如$&Theta;(n)$表示时间复杂度是$n$的
+函数集合.具体定义如下.
+</p>
+</div>
+</li>
+
+<li><a id="sec-2" name="sec-2"></a>定义<br  /><ol class="org-ol"><li><a id="sec-2-1" name="sec-2-1"></a>\(\Theta\) 记号<br  /><div class="outline-text-3" id="text-2-1">
+<p>
+对于一个给定的函数\(g(n)\),用$&Theta;(g(n))$来表示以下的函数集合:
+</p>
+
+<p>
+\(\Theta(g(n))\) = {\(f(n)\):存在正的常数\(c_1\),$c_2$和\(n_0\),使得对于所有\(n\ge n_0\),有$0&le; c_1g(n) &le; f(n) &le; c_2g(n)$}
+</p>
+
+<p>
+即存在正的常数$c_1$和\(c_2\),使得对于足够大的\(n\), 函数$f(n)$能"夹入"$c_1g(n)$与$c_2g(n)$之间,则$f(n)$属于集合\(\Theta(g(n))\).
+</p>
+
+<p>
+这里的$g(n)$是$f(n)$的一个 <b>渐近紧确界</b> .
+</p>
+</div>
+</li>
+<li><a id="sec-2-2" name="sec-2-2"></a>\(O\) 和 \(o\) 记号<br  /><div class="outline-text-3" id="text-2-2">
+<p>
+\(O(g(n))\) 表示的是渐近上界,它可能是紧确的,也可能不是,而$o(g(n))$一定不是上紧确的.
+</p>
+
+<p>
+\(\O(g(n))\) = {\(f(n)\):存在正的常数$c$和\(n_0\),使得对于所有\(n \ge n_0\),有$0&le; f(n) &le; cg(n)$}
+</p>
+
+<p>
+\(\o(g(n))\) = {\(f(n)\):存在正的常数$c$和\(n_0\),使得对于所有\(n \ge n_0\),有$0&le; f(n) &lt; cg(n)$}
+</p>
+</div>
+</li>
+
+<li><a id="sec-2-3" name="sec-2-3"></a>\(\Omega\) 和 \(\omega\) 记号<br  /><div class="outline-text-3" id="text-2-3">
+<p>
+\(\Omega(g(n))\) 表示下界,可能是紧确的,也可能不是,而$&omega;$一定不是紧确的.
+</p>
+
+<p>
+\(\Omega (g(n))\) = {\(f(n)\):存在正的常数$c$和\(n_0\),使得对于所有\(n \ge n_0\),有$0 &le; g(n) &le; f(n)$}
+</p>
+
+<p>
+\(\omega (g(n))\) = {\(f(n)\):存在正的常数$c$和\(n_0\),使得对于所有\(n \ge n_0\),有$0 &le; g(n) &lt; f(n)$}
+</p>
+</div>
+</li></ol>
+</li>
+
+<li><a id="sec-3" name="sec-3"></a>计算<br  /><div class="outline-text-2" id="text-3">
+<p>
+对于给定的递归的函数,我们可以计算它的时间复杂度的界.通常有3中方法(第四章):
+</p>
+<ol class="org-ol">
+<li>猜测一个解,并用代入法求解
+</li>
+<li>用递归树方法求解
+</li>
+<li>用主方法求解
+</li>
+</ol>
+
+<p>
+方法1需要猜测一个解,然后代入递归式,假设小于n都成立,证明等于n时也成立,通常需要猜测一个好的解,而方法2可以用来猜测这个
+解.用递归树有时可以得到精确的时间函数,这是我们可以判断得到的是一个紧的界.但有时由于树是非完全树等原因,通常我们会放宽条件,
+得到的可能是一个不紧的界,这是就需要用代入法来验证.方法3可以解决一类递归式,但是还有很大一部分不能用这个公式.
+</p>
+</div>
+</li>
+
+<li><a id="sec-4" name="sec-4"></a>证明中常用公式和实例<br  /><ol class="org-ol"><li><a id="sec-4-1" name="sec-4-1"></a>常用公式<br  /><ol class="org-ol"><li><a id="sec-4-1-1" name="sec-4-1-1"></a>取整公式<br  /><div class="outline-text-4" id="text-4-1-1">
+<p>
+有些递归式带有取整符号,在用代入法求解时通常需要"凑",不如证明$O(n^2)$时可以转化成证明\(O(n^2-1)\),这两个是一样的.
+下面几个公式比较常用:
+$$ \lceil \frac{n}{2} \rceil + 1 \g3 \frac{n+1}{2}$$
+$$ \lfloor \frac{n}{2} \rfloor + 1 \ge \frac{n+1}{2}$$
+$$ \lceil \frac{n}{2} \rceil - 1 \le \frac{n-1}{2}$$
+$$ \lfloor \frac{n}{2} \rfloor - 1 \le \frac{n-1}{2}$$
+</p>
+</div>
+</li>
+
+<li><a id="sec-4-1-2" name="sec-4-1-2"></a>调和级数<br  /><div class="outline-text-4" id="text-4-1-2">
+<p>
+调和级数也比较容易出现:
+$$\Sigma_{i=1}^{n} \frac{1}{i} = \Omega(\ln{n})$$
+</p>
+</div>
+</li>
+
+<li><a id="sec-4-1-3" name="sec-4-1-3"></a>阶乘的界<br  /><div class="outline-text-4" id="text-4-1-3">
+<p>
+阶乘$n!$可以给出一个弱上界\(n! \le n^n\),斯特林(Stirling)公式给出了一个更紧确的上下界:
+斯特林(Stirling)近似公式:
+$$n! = \sqrt{2 \pi n}(\frac{n}{e})^n(1+\Omega(\frac{1}{n}))$$
+可以借助斯特林公式证明:
+$$\lg(n!)=\Omega(n\lg n)$$
+</p>
+</div>
+</li>
+
+<li><a id="sec-4-1-4" name="sec-4-1-4"></a>求根深度<br  /><div class="outline-text-4" id="text-4-1-4">
+<p>
+在做递归树展开时,通常需要计算树的深度,一般的比较容易,而想$T(\sqrt{n})$的深度可以由以下估计,首先假设最后结果是2,证明如下:
+$$ \sqrt{n}{2^k} = 2 $$
+$$ n = 2^{2^k}$$
+$$ k = \lg{\lg n} $$
+求得深度k
+</p>
+</div>
+</li>
+
+<li><a id="sec-4-1-5" name="sec-4-1-5"></a>fibbonaci数<br  /><div class="outline-text-4" id="text-4-1-5">
+<p>
+Fibbonaci有通项公式:
+$$F_i = \frac{1}{\sqrt{5}}((\frac{1+\sqrt{5}}{2})^i - (\frac{1-\sqrt{5}}{2})^i)$$
+由于后面那一项的绝对值小于1,所以更简单的公式:
+$$F_i = round(\frac{1}{\sqrt{5}}(\frac{1+\sqrt{5}}{2})^i)$$
+$round$表示舍入到最近的整数.
+</p>
+</div>
+</li>
+
+<li><a id="sec-4-1-6" name="sec-4-1-6"></a>量级比较<br  /><div class="outline-text-4" id="text-4-1-6">
+<p>
+一些比较常见的量级比较:
+</p>
+<ol class="org-ol">
+<li>对于$a&gt;1$的实常量$a$和\(b\),有:
+</li>
+</ol>
+<p>
+$$n^b = o(a^n)$$
+</p>
+<ol class="org-ol">
+<li>对于任意常量\(a>0\):
+</li>
+</ol>
+<p>
+$$\lg^b n = o(n^a)$$
+</p>
+<ol class="org-ol">
+<li>对于\(1<a<b\),有:
+</li>
+</ol>
+<p>
+$$na^n = o(b^n)$$
+</p>
+</div>
+</li></ol>
+</li>
+<li><a id="sec-4-2" name="sec-4-2"></a>实例<br  /></li></ol>
+</li></ol>

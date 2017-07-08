@@ -1,0 +1,155 @@
+---
+layout: post
+title: 求和相关题目
+excerpt: LeetCode上求和题目总结
+---
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 题型</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Two Sum</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+LeetCode 1:
+</p>
+
+<p>
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+</p>
+
+<p>
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+</p>
+
+<p>
+输入一个数组nums和一个数target,输出数组中的一对数,它们的和刚好为target.
+</p>
+
+<p>
+这个问题是后面一些求和(比如3sum,4sum的基础),遍历所有可能的复杂度为 \(\Theta(n^2)\).
+</p>
+
+<p>
+更快的方法有两种思路:
+</p>
+<ol class="org-ol">
+<li>基于hash表(c++中的map),遍历输入数组,对于元素 \(nums[i]\), 我们需要查看数组中有没有 \(target-nums[i]\) ,这个可以用hash来实现.
+</li>
+</ol>
+<p>
+时间复杂度依赖于hash表的效率.不过该方法不用排序
+</p>
+
+<ol class="org-ol">
+<li>基于排序的方法, 将输入数组从小到大排序,然后从头尾向中间靠拢直到和为target,排序的复杂度为 \(\Theta(n\lg{n})\) , 总的复杂度也是 \(\Theta(n\lg{n})\) .
+</li>
+</ol>
+
+<p>
+这里还需要注意的一个问题是重复元素的问题.需要吧重复元素去掉.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 3Sum</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+Given an array \(S\) of \(n\) integers, are there elements \(a, b, c\) in \(S\) such that \(a + b + c = 0\)? Find all unique triplets in the array which gives the sum of zero.
+</p>
+
+<p>
+利用two sum方法.先排序,第一个数开始遍历,剩余的数用two sum来求,这里主要注意有多个结果,还有重复元素. 时间复杂度 \(\Theta(n^2)\).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> 3Sum Closest</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+Given an array \(S\) of \(n\) integers, find three integers in \(S\) such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+</p>
+
+<p>
+利用3Sum,每次计算保存最接近的值.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> 4Sum</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+利用3Sum可以得到 \(\Theta(n^3)\) 的结果. StefanPochmann证明了lower bound是 \(\Omega(n^3)\) ,所以这已经是渐进最优了.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> 4Sum II</h3>
+<div class="outline-text-3" id="text-1-5">
+<p>
+Given four lists \(A, B, C, D\) of integer values, compute how many tuples \((i, j, k, l)\) there are such that \(A[i] + B[j] + C[k] + D[l]\) is zero.
+</p>
+
+<p>
+To make problem a bit easier, all \(A, B, C, D\) have same length of \(N\) where \(0 \le N \le 500\). All integers are in the range of \(-2^{28}\) to \(2^{28} - 1\) and the result is guaranteed to be at most \(2^{31} - 1\).
+</p>
+
+<p>
+这个问题直观解法是4重循环,时间复杂度为 \(\Theta(n^4)\),但是会超时.
+</p>
+
+<p>
+还是使用hash来解,遍历 \(A\) 和 \(B\) ,计算元素之间的和并存入hash表中, 然后遍历 \(C\) 和 \(D\) ,并查找两两元素和的相反数是否在hash表中,如果在,说明有这四个元素和为0.如果hash查找时间为 \(\Theta(1)\) ,则总的时间复杂度为 \(\Theta(n^2)\) .
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-6" class="outline-3">
+<h3 id="sec-1-6"><span class="section-number-3">1.6</span> 子序列和为K</h3>
+<div class="outline-text-3" id="text-1-6">
+<p>
+Given an array of integers and an integer \(k\), you need to find the total number of continuous subarrays whose sum equals to \(k\).
+</p>
+
+<p>
+思路主要是采用hash(或者集合),并用累计和.连续区间的和可以表示为结束位置的累计和减去开始位置的累计和.
+我们将累计和用hash(或集合)保存下来,要求一个区间满足一定条件,就可以利用hash表.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-7" class="outline-3">
+<h3 id="sec-1-7"><span class="section-number-3">1.7</span> 连续子序列和</h3>
+<div class="outline-text-3" id="text-1-7">
+<p>
+Given a list of non-negative numbers and a target integer \(k\), write a function to check if the array has a continuous subarray of size at least 2 that sums up to the multiple of \(k\), that is, sums up to n*k where \(n\) is also an integer.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 总结</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+大致有4个思路:
+</p>
+<ol class="org-ol">
+<li>遍历,回溯,考虑所有可能
+</li>
+<li>用hash表存储部分和结果. 比如4层遍历的复杂度为 \(O(n^4)\), 但是如果假设hash为 \(O(1)\) ,两个两层遍历就是 \(O(n^2)\)
+</li>
+<li>排序后shrink,从两边向中间靠拢
+</li>
+<li>求累计和,在累计和的基础上思考方法,配合hash使用
+</li>
+</ol>
+
+<p>
+hash_map 是常用的数据结构,记录数字出现的个数.
+</p>
+</div>
+</div>

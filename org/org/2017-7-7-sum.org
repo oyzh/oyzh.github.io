@@ -1,0 +1,71 @@
+#+BEGIN_HTML
+---
+layout: post
+title: 求和相关题目
+excerpt: LeetCode上求和题目总结
+---
+#+END_HTML
+#+OPTIONS: toc:nil
+#+OPTIONS: ^:{}
+* 题型
+** Two Sum
+LeetCode 1:
+
+Given an array of integers, return indices of the two numbers such that they add up to a specific target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+输入一个数组nums和一个数target,输出数组中的一对数,它们的和刚好为target.
+
+这个问题是后面一些求和(比如3sum,4sum的基础),遍历所有可能的复杂度为 $\Theta(n^2)$.
+
+更快的方法有两种思路:
+1. 基于hash表(c++中的map),遍历输入数组,对于元素 $nums[i]$, 我们需要查看数组中有没有 $target-nums[i]$ ,这个可以用hash来实现.
+时间复杂度依赖于hash表的效率.不过该方法不用排序
+
+2. 基于排序的方法, 将输入数组从小到大排序,然后从头尾向中间靠拢直到和为target,排序的复杂度为 $\Theta(n\lg{n})$ , 总的复杂度也是 $\Theta(n\lg{n})$ .
+
+这里还需要注意的一个问题是重复元素的问题.需要吧重复元素去掉.
+
+** 3Sum
+
+Given an array $S$ of $n$ integers, are there elements $a, b, c$ in $S$ such that $a + b + c = 0$? Find all unique triplets in the array which gives the sum of zero.
+
+利用two sum方法.先排序,第一个数开始遍历,剩余的数用two sum来求,这里主要注意有多个结果,还有重复元素. 时间复杂度 $\Theta(n^2)$.
+
+** 3Sum Closest
+Given an array $S$ of $n$ integers, find three integers in $S$ such that the sum is closest to a given number, target. Return the sum of the three integers. You may assume that each input would have exactly one solution.
+
+利用3Sum,每次计算保存最接近的值.
+
+** 4Sum
+利用3Sum可以得到 $\Theta(n^3)$ 的结果. StefanPochmann证明了lower bound是 $\Omega(n^3)$ ,所以这已经是渐进最优了.
+
+** 4Sum II
+
+Given four lists $A, B, C, D$ of integer values, compute how many tuples $(i, j, k, l)$ there are such that $A[i] + B[j] + C[k] + D[l]$ is zero.
+
+To make problem a bit easier, all $A, B, C, D$ have same length of $N$ where $0 \le N \le 500$. All integers are in the range of $-2^{28}$ to $2^{28} - 1$ and the result is guaranteed to be at most $2^{31} - 1$.
+
+这个问题直观解法是4重循环,时间复杂度为 $\Theta(n^4)$,但是会超时.
+
+还是使用hash来解,遍历 $A$ 和 $B$ ,计算元素之间的和并存入hash表中, 然后遍历 $C$ 和 $D$ ,并查找两两元素和的相反数是否在hash表中,如果在,说明有这四个元素和为0.如果hash查找时间为 $\Theta(1)$ ,则总的时间复杂度为 $\Theta(n^2)$ .
+
+** 子序列和为K
+Given an array of integers and an integer $k$, you need to find the total number of continuous subarrays whose sum equals to $k$.
+
+思路主要是采用hash(或者集合),并用累计和.连续区间的和可以表示为结束位置的累计和减去开始位置的累计和.
+我们将累计和用hash(或集合)保存下来,要求一个区间满足一定条件,就可以利用hash表.
+
+** 连续子序列和
+
+Given a list of non-negative numbers and a target integer $k$, write a function to check if the array has a continuous subarray of size at least 2 that sums up to the multiple of $k$, that is, sums up to n*k where $n$ is also an integer.
+
+* 总结
+  大致有4个思路:
+1. 遍历,回溯,考虑所有可能
+2. 用hash表存储部分和结果. 比如4层遍历的复杂度为 $O(n^4)$, 但是如果假设hash为 $O(1)$ ,两个两层遍历就是 $O(n^2)$
+3. 排序后shrink,从两边向中间靠拢
+4. 求累计和,在累计和的基础上思考方法,配合hash使用
+
+hash_map 是常用的数据结构,记录数字出现的个数.
